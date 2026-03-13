@@ -1,7 +1,0 @@
-/.env.local
-/.env.local.php
-/.env.*.local
-/config/secrets/*.local.php
-/public/bundles/
-/var/
-/vendor/
