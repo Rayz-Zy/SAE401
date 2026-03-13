@@ -1,0 +1,64 @@
+/* Header Styles */
+.top-header {
+  position: relative;
+  height: 180px; /* Increased to fit logo + search bar */
+  display: flex;
+  align-items: flex-start; /* Align title to top */
+  padding: 40px;
+  background-color: transparent;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.page-title {
+  margin-top: 70px;
+  margin-left: 10px;
+  font-size: 40px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #f1f1f1;
+  border-radius: 12px;
+  padding: 14px 24px;
+  width: 600px;
+  gap: 12px;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 16px;
+  width: 100%;
+  color: #333;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.header-center {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-logo {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  transform: scale(2.5);
+}
