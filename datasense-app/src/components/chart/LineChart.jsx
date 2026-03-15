@@ -23,7 +23,18 @@ ChartJS.register(
   Filler
 );
 
+/**
+ * Composant pour afficher un graphique d'évolution temporel (Line Chart).
+ * Utilise la bibliothèque Chart.js via react-chartjs-2.
+ * 
+ * @param {Array} etiquettes - Les labels de l'axe X (les années)
+ * @param {Array} donnees - Les valeurs de l'axe Y (les chiffres)
+ * @param {string} titre - Le titre affiché au-dessus du graphique
+ * @param {string} libelle - Le texte affiché dans la légende
+ * @param {string} couleur - La couleur de la ligne et du remplissage
+ */
 const LineChart = ({ etiquettes, donnees, titre, libelle, couleur = 'rgba(54, 162, 235, 1)' }) => {
+  // Préparation de l'objet de données formaté pour Chart.js
   const donnees_graphique = {
     labels: etiquettes,
     datasets: [

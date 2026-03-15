@@ -11,9 +11,9 @@ export default function DashboardGrid({ selectedDepartement }) {
     const [chargement_en_cours, definir_chargement_en_cours] = useState(false);
     const [erreur, definir_erreur] = useState(null);
 
-    // Effet qui se déclenche quand un nouveau département est sélectionné
+    // --- 1. RÉCUPÉRATION DES DONNÉES (API) ---
+    // Cet effet se déclenche dès que 'selectedDepartement' change (via la recherche)
     useEffect(() => {
-      // S'il n'y a pas de département sélectionné, on réinitialise l'état
       if (!selectedDepartement) {
         definir_stats_departement(null);
         return;
@@ -22,7 +22,7 @@ export default function DashboardGrid({ selectedDepartement }) {
       definir_chargement_en_cours(true);
       definir_erreur(null);
 
-      // Appel de l'URL spécifique avec le code du département sélectionné
+      // Appel à l'API pour récupérer les statistiques historiques du département
       fetch(`http://127.0.0.1:8000/statistic/statistiques_departement/${selectedDepartement.code}`)
         .then(res => {
           if (!res.ok) {
@@ -31,6 +31,7 @@ export default function DashboardGrid({ selectedDepartement }) {
           return res.json();
         })
         .then(donnees => {
+          // Stockage des données brutes dans l'état local
           definir_stats_departement(donnees);
           definir_chargement_en_cours(false);
         })
@@ -41,7 +42,9 @@ export default function DashboardGrid({ selectedDepartement }) {
         });
     }, [selectedDepartement]);
 
-    // Transformation des données pour les graphiques
+    // --- 2. TRANSFORMATION DES DONNÉES POUR LES GRAPHIQUES ---
+    // On transforme les données brutes de l'API en objets { etiquettes, donnees } pour Chart.js
+    // useMemo permet d'éviter de recalculer ces données inutilement à chaque rendu
     const donnees_population = useMemo(() => 
       transformer_stats_pour_graphique(stats_departement, 'nombreHabitants'), 
       [stats_departement]
@@ -62,7 +65,8 @@ export default function DashboardGrid({ selectedDepartement }) {
       [stats_departement]
     );
 
-    // Extraction des dernières valeurs pour les StatCards
+    // --- 3. EXTRACTION DES DERNIÈRES VALEURS (KPIs) ---
+    // On récupère uniquement le point de donnée le plus récent (2023) pour les cartes de résumé
     const derniere_population = useMemo(() => obtenir_derniere_valeur(stats_departement, 'nombreHabitants'), [stats_departement]);
     const derniers_logements_sociaux = useMemo(() => obtenir_derniere_valeur(stats_departement, 'TauxLogementsSociaux'), [stats_departement]);
     const derniers_logements_vacants = useMemo(() => obtenir_derniere_valeur(stats_departement, 'TauxLogementsVacants'), [stats_departement]);
@@ -71,6 +75,7 @@ export default function DashboardGrid({ selectedDepartement }) {
   return (
     <div className="content-wrapper">
       <div className="dashboard-grid">
+        {/* En-tête du tableau de bord */}
         <div className="dashboard-header-card" style={{ gridColumn: "span 3" }}>
           <div className="header-info">
             <h2 style={{ margin: 0 }}>
@@ -84,6 +89,7 @@ export default function DashboardGrid({ selectedDepartement }) {
 
         {selectedDepartement && (
           <>
+            {/* États de chargement et d'erreur */}
             {chargement_en_cours && (
               <div className="dashboard-card" style={{ gridColumn: "span 3", textAlign: "center", padding: '40px' }}>
                 <p>Chargement des statistiques en cours...</p>
@@ -96,9 +102,11 @@ export default function DashboardGrid({ selectedDepartement }) {
               </div>
             )}
             
+            {/* --- 4. AFFICHAGE DES COMPOSANTS --- */}
             {stats_departement && !chargement_en_cours && !erreur && (
               <>
-                {/* KPI Row */}
+                {/* Ligne des cartes de statistiques (KPIs) */}
+                {/* Ici les données transformées sont injectées dans 'valeur' et 'annee' */}
                 <div className="dashboard-stat-row" style={{ gridColumn: "span 3", display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
                     <StatCard 
                         libelle="Population totale" 
@@ -134,7 +142,8 @@ export default function DashboardGrid({ selectedDepartement }) {
                     />
                 </div>
 
-                {/* Main Charts Row */}
+                {/* Graphiques d'évolution (Ligne 1) */}
+                {/* On passe 'etiquettes' (X) et 'donnees' (Y) au composant LineChart */}
                 <div className="dashboard-card" style={{ gridColumn: "span 2" }}>
                   <LineChart 
                     etiquettes={donnees_population.etiquettes}
