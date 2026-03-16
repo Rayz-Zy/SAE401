@@ -10,6 +10,7 @@ export default function DashboardGrid({ selectedDepartement }) {
   const [stats_departement, definir_stats_departement] = useState(null);
   const [chargement_en_cours, definir_chargement_en_cours] = useState(false);
   const [erreur, definir_erreur] = useState(null);
+  const [modePreview, definir_modePreview] = useState(false);
 
   // --- 1. RÉCUPÉRATION DES DONNÉES (API) ---
   // Cet effet se déclenche dès que 'selectedDepartement' change (via la recherche)
@@ -81,13 +82,32 @@ export default function DashboardGrid({ selectedDepartement }) {
             <h2 style={{ margin: 0 }}>
               {selectedDepartement
                 ? `Tableau de bord : ${selectedDepartement.nom} (${selectedDepartement.code})`
-                : "Sélectionnez un département pour voir ses statistiques"}
+                : modePreview ? "Aperçu des graphiques (données vides)" : "Sélectionnez un département pour voir ses statistiques"}
             </h2>
             {selectedDepartement && <p className="last-update">Données mises à jour pour 2021-2023</p>}
           </div>
+          {!selectedDepartement && (
+            <button
+              onClick={() => definir_modePreview(prev => !prev)}
+              style={{
+                marginLeft: 'auto',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                background: modePreview ? '#e74c3c' : '#3498db',
+                color: 'white',
+                transition: 'background 0.2s',
+              }}
+            >
+              {modePreview ? '✕ Masquer l\'aperçu' : '👁 Aperçu des graphiques'}
+            </button>
+          )}
         </div>
 
-        {selectedDepartement && (
+        {(selectedDepartement || modePreview) && (
           <>
             {/* États de chargement et d'erreur */}
             {chargement_en_cours && (
@@ -103,7 +123,7 @@ export default function DashboardGrid({ selectedDepartement }) {
             )}
 
             {/* --- 4. AFFICHAGE DES COMPOSANTS --- */}
-            {stats_departement && !chargement_en_cours && !erreur && (
+            {(stats_departement || modePreview) && !chargement_en_cours && !erreur && (
               <>
                 {/* Ligne des cartes de statistiques (KPIs) */}
                 {/* Ici les données transformées sont injectées dans 'valeur' et 'annee' */}
@@ -159,7 +179,7 @@ export default function DashboardGrid({ selectedDepartement }) {
                     <h3 style={{ fontSize: '1rem', color: '#7f8c8d', textTransform: 'uppercase', marginBottom: '15px' }}>Densité actuelle</h3>
                     <div style={{ position: 'relative', display: 'inline-block' }}>
                       <p style={{ fontSize: '3rem', fontWeight: 'bold', color: '#2c3e50', margin: 0 }}>
-                        {stats_departement[0]?.densitePopulation}
+                        {stats_departement?.[0]?.densitePopulation ?? '—'}
                       </p>
                       <span style={{ fontSize: '0.9rem', color: '#95a5a6', display: 'block' }}>Habitants / km²</span>
                     </div>

@@ -32,6 +32,9 @@
   border: 1px solid #e0e0e0;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .last-update {
