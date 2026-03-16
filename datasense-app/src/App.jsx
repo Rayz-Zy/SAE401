@@ -7,8 +7,7 @@ import './App.css';
 function App() {
   const [selectedDepartement, setSelectedDepartement] = useState(null);
 
-  // Exemple d'utilisation dans Header : setSelectedDepartement(dep)
-  // Exemple d'utilisation dans DashboardGrid : affichage des stats pour selectedDepartement
+
   
   return (
     <div className="app-container">

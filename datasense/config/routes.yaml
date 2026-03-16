@@ -24,3 +24,8 @@ app_statistique_region:
     path: /statistique/region
     controller: App\Controller\StatistiqueController::region
     methods: [GET]
+
+app_statistique_departement_code:
+    path: /statistique/logement/{code}
+    controller: App\Controller\StatistiqueController::statistiquesLogementCode
+    methods: [GET]

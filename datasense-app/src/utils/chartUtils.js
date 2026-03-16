@@ -2,7 +2,7 @@
  * Transforme les statistiques brutes de l'API en format compatible avec Chart.js.
  * Attend un tableau d'objets avec anneePublication.
  * 
- * @param {Array} statistiques - Les données brutes reçues de l'API FastAPI
+ * @param {Array} statistiques - Les données brutes reçues de l'API 
  * @param {string} cle_donnee - Le nom du champ à extraire (ex: 'nombreHabitants')
  * @returns {Object} - Un objet contenant les étiquettes (X) et les données (Y)
  */
@@ -16,13 +16,13 @@ export const transformer_stats_pour_graphique = (statistiques, cle_donnee) => {
     const etiquettes = statistiques_triees.map(item => item.anneePublication.toString());
     
     // Extraction des valeurs pour l'axe Y
-    const donnees = statistiques_triees.map(item => {
-        const cles = cle_donnee.split('.');
-        let valeur = item;
-        for (const cle of cles) {
-            valeur = valeur?.[cle];
+    const donnees = statistiques_triees.map(item => { // On parcourt les données pour extraire les valeurs
+        const cles = cle_donnee.split('.'); // On sépare les clés imbriquées
+        let valeur = item;  // On initialise la valeur
+        for (const cle of cles) {   // On parcourt les clés imbriquées
+            valeur = valeur?.[cle]; // On accède à la valeur imbriquée
         }
-        return typeof valeur === 'string' ? parseFloat(valeur) : valeur;
+        return typeof valeur === 'string' ? parseFloat(valeur) : valeur; // On retourne la valeur
     });
 
     return { etiquettes, donnees };

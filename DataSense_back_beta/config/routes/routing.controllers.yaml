@@ -1,4 +1,0 @@
-# Load all controller classes with routing attributes
-controllers:
-    resource: ../../src/Controller/
-    type: attribute

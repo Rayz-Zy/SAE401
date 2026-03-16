@@ -31,4 +31,16 @@ final class StatistiqueController extends AbstractController
 
         return $this->json($regions, 200, [], ['groups' => 'region']);
     }
+
+
+    public function statistiquesLogementCode(EntityManagerInterface $entityManager, string $code): Response
+    {
+        $statistiques = $entityManager->getRepository(StatistiqueLogement::class)->findBy(['departement' => $code]);
+
+        if (!$statistiques) {
+            return $this->json(['message' => 'Statistiques non trouvées pour ce code'], 404);
+        }
+
+        return $this->json($statistiques, 200, [], ['groups' => 'logement']);
+    }
 }
