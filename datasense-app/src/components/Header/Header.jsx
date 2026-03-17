@@ -3,73 +3,104 @@ import { Search } from 'lucide-react';
 import logo from '../../assets/logo.svg';
 import './Header.css';
 
-export default function Header({ onDepartementSelect }) {
+export default function Header({ onDepartementSelect, currentView, onViewChange }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [departements, setDepartements] = useState([]);
+  const [entities, setEntities] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
 
-  // 1. Appel API au montage du composant
+  // 1. Appel API au montage ou changement de vue
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/statistique/departement')
-      .then(res => res.json())
-      .then(data => setDepartements(data))
-      .catch(err => console.error("Erreur lors de la récupération des départements:", err));
-  }, []);
+    if (currentView === 'accueil' || currentView === 'departements' || currentView === 'regions') {
+      const fetchDepartments = fetch('http://127.0.0.1:8000/statistique/departement')
+        .then(res => res.json())
+        .then(data => data.map(d => ({ ...d, type: 'departement' })));
+
+      const fetchRegions = fetch('http://127.0.0.1:8000/statistique/region')
+        .then(res => res.json())
+        .then(data => data.map(r => ({ ...r, type: 'region' })));
+
+      if (currentView === 'accueil') {
+        Promise.all([fetchDepartments, fetchRegions])
+          .then(([deps, regs]) => setEntities([...deps, ...regs]))
+          .catch(err => console.error("Erreur lors de la récupération globale:", err));
+      } else if (currentView === 'regions') {
+        fetchRegions.then(data => setEntities(data));
+      } else {
+        fetchDepartments.then(data => setEntities(data));
+      }
+    }
+    // Reset de la recherche à chaque changement de vue
+    setSearchTerm('');
+  }, [currentView]);
 
   // 2. Filtrage des données
-  const filteredDepartements = useMemo(() => {
+  const filteredEntities = useMemo(() => {
     if (!searchTerm) return [];
 
     const lowerCaseSearch = searchTerm.toLowerCase();
 
-    return departements.filter(dep =>
-      dep.nom.toLowerCase().includes(lowerCaseSearch) ||
-      dep.code.includes(lowerCaseSearch)
+    return entities.filter(ent =>
+      ent.nom.toLowerCase().includes(lowerCaseSearch) ||
+      ent.code.toLowerCase().includes(lowerCaseSearch)
     );
-  }, [searchTerm, departements]);
+  }, [searchTerm, entities]);
 
   // Gestion de la sélection
-  const handleSelect = (dep) => {
+  const handleSelect = (ent) => {
     if (onDepartementSelect) {
-      onDepartementSelect(dep);
+      onDepartementSelect(ent);
     }
-    setSearchTerm(`${dep.code} - ${dep.nom}`); // Affiche le choix dans l'input
-    setIsFocused(false); // Ferme la liste
+    setSearchTerm(`${ent.code} - ${ent.nom}`);
+    setIsFocused(false);
   };
 
   return (
     <header className="top-header">
       <div className="header-left">
-        <h1 className="page-title">Accueil</h1>
+        <h1 className="page-title">{currentView === 'accueil' ? 'Accueil' : currentView === 'regions' ? 'Régions' : 'Départements'}</h1>
       </div>
       <div className="header-center">
-        <img src={logo} alt="Datasense Logo" className="header-logo" />
+        <div 
+          onClick={(e) => {
+            e.preventDefault();
+            onViewChange('accueil');
+          }} 
+          className="logo-link"
+          style={{ cursor: 'pointer' }}
+        >
+          <img src={logo} alt="Datasense Logo" className="header-logo" />
+        </div>
 
         <div className="search-container">
           <div className="search-bar">
             <Search size={18} color="#999" />
             <input
               type="text"
-              placeholder="Rechercher par numéro ou nom"
+              placeholder={currentView === 'accueil' ? "Rechercher un département ou une région" : `Rechercher un ${currentView === 'regions' ? 'région' : 'département'}`}
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setIsFocused(true)}
-              onBlur={() => setTimeout(() => setIsFocused(false), 150)} // Laisse le temps au clic de s'enregistrer
+              onBlur={() => setTimeout(() => setIsFocused(false), 150)}
             />
           </div>
 
           {/* Menu déroulant d'autocomplétion */}
-          {isFocused && searchTerm && filteredDepartements.length > 0 && (
+          {isFocused && searchTerm && filteredEntities.length > 0 && (
             <ul className="search-results">
-              {filteredDepartements.map(dep => (
+              {filteredEntities.map(ent => (
                 <li
-                  key={dep.code}
+                  key={`${ent.type}-${ent.code}`}
                   className="search-item"
-                  onClick={() => handleSelect(dep)}
+                  onClick={() => handleSelect(ent)}
                 >
-                  <span className="search-item-code">{dep.code}</span>
-                  <span className="search-item-nom">{dep.nom}</span>
+                  <div className="search-item-info">
+                    <span className="search-item-code">{ent.code}</span>
+                    <span className="search-item-nom">{ent.nom}</span>
+                  </div>
+                  <span className={`search-item-type ${ent.type}`}>
+                    {ent.type === 'region' ? 'Région' : 'Dépt'}
+                  </span>
                 </li>
               ))}
             </ul>

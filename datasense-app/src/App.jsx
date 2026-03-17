@@ -6,15 +6,19 @@ import './App.css';
 
 function App() {
   const [selectedDepartement, setSelectedDepartement] = useState(null);
+  const [currentView, setCurrentView] = useState('accueil'); // 'accueil', 'departements' ou 'regions'
 
-
+  const handleViewChange = (newView) => {
+    setCurrentView(newView);
+    setSelectedDepartement(null); // Réinitialise la sélection lors du changement de vue
+  };
   
   return (
     <div className="app-container">
-      <Sidebar />
+      <Sidebar currentView={currentView} onViewChange={handleViewChange} />
       <main className="main-area">
-        <Header onDepartementSelect={setSelectedDepartement} />
-        <DashboardGrid selectedDepartement={selectedDepartement} />
+        <Header onDepartementSelect={setSelectedDepartement} currentView={currentView} onViewChange={handleViewChange} />
+        <DashboardGrid selectedDepartement={selectedDepartement} currentView={currentView} />
       </main>
     </div>
   );

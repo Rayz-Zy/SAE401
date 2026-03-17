@@ -5,26 +5,29 @@ import StatCard from './StatCard';
 import { transformer_stats_pour_graphique, obtenir_derniere_valeur } from '../../utils/chartUtils';
 import { Users, Home, TrendingUp, Percent, Info } from 'lucide-react';
 
-export default function DashboardGrid({ selectedDepartement }) {
+export default function DashboardGrid({ selectedDepartement, currentView }) {
   // État pour stocker les données brutes de l'API
-  const [stats_departement, definir_stats_departement] = useState(null);
+  const [stats, setStats] = useState(null);
   const [chargement_en_cours, definir_chargement_en_cours] = useState(false);
   const [erreur, definir_erreur] = useState(null);
   const [modePreview, definir_modePreview] = useState(false);
 
   // --- 1. RÉCUPÉRATION DES DONNÉES (API) ---
-  // Cet effet se déclenche dès que 'selectedDepartement' change (via la recherche)
   useEffect(() => {
     if (!selectedDepartement) {
-      definir_stats_departement(null);
+      setStats(null);
       return;
     }
 
     definir_chargement_en_cours(true);
     definir_erreur(null);
 
-    // Appel à l'API pour récupérer les statistiques historiques du département
-    fetch(`http://127.0.0.1:8000/statistique/logement/${selectedDepartement.code}`)
+    const entityType = selectedDepartement.type || (currentView === 'regions' ? 'region' : 'departement');
+    const endpoint = entityType === 'region'
+      ? `http://127.0.0.1:8000/statistique/region/${selectedDepartement.code}`
+      : `http://127.0.0.1:8000/statistique/logement/${selectedDepartement.code}`;
+
+    fetch(endpoint)
       .then(res => {
         if (!res.ok) {
           throw new Error('Erreur lors de la récupération des statistiques');
@@ -32,8 +35,7 @@ export default function DashboardGrid({ selectedDepartement }) {
         return res.json();
       })
       .then(donnees => {
-        // Stockage des données brutes dans l'état local
-        definir_stats_departement(donnees);
+        setStats(donnees);
         definir_chargement_en_cours(false);
       })
       .catch(err => {
@@ -41,37 +43,34 @@ export default function DashboardGrid({ selectedDepartement }) {
         definir_erreur(err.message);
         definir_chargement_en_cours(false);
       });
-  }, [selectedDepartement]);
+  }, [selectedDepartement, currentView]);
 
   // --- 2. TRANSFORMATION DES DONNÉES POUR LES GRAPHIQUES ---
-  // On transforme les données brutes de l'API en objets { etiquettes, donnees } pour Chart.js
-  // useMemo permet d'éviter de recalculer ces données inutilement à chaque rendu
   const donnees_population = useMemo(() =>
-    transformer_stats_pour_graphique(stats_departement, 'nombreHabitants'),
-    [stats_departement]
+    transformer_stats_pour_graphique(stats, 'nombreHabitants'),
+    [stats]
   );
 
   const donnees_chomage = useMemo(() =>
-    transformer_stats_pour_graphique(stats_departement, 'tauxChomageT4'),
-    [stats_departement]
+    transformer_stats_pour_graphique(stats, 'tauxChomageT4'),
+    [stats]
   );
 
   const donnees_pauvrete = useMemo(() =>
-    transformer_stats_pour_graphique(stats_departement, 'tauxPauvrete'),
-    [stats_departement]
+    transformer_stats_pour_graphique(stats, 'tauxPauvrete'),
+    [stats]
   );
 
   const donnees_logements = useMemo(() =>
-    transformer_stats_pour_graphique(stats_departement, 'nombreLogement'),
-    [stats_departement]
+    transformer_stats_pour_graphique(stats, 'nombreLogement'),
+    [stats]
   );
 
   // --- 3. EXTRACTION DES DERNIÈRES VALEURS (KPIs) ---
-  // On récupère uniquement le point de donnée le plus récent (2023) pour les cartes de résumé
-  const derniere_population = useMemo(() => obtenir_derniere_valeur(stats_departement, 'nombreHabitants'), [stats_departement]);
-  const derniers_logements_sociaux = useMemo(() => obtenir_derniere_valeur(stats_departement, 'tauxLogementsSociaux'), [stats_departement]);
-  const derniers_logements_vacants = useMemo(() => obtenir_derniere_valeur(stats_departement, 'tauxDeLogementsVacants'), [stats_departement]);
-  const derniere_pop_jeune = useMemo(() => obtenir_derniere_valeur(stats_departement, 'pourcentageMoins20Ans'), [stats_departement]);
+  const derniere_population = useMemo(() => obtenir_derniere_valeur(stats, 'nombreHabitants'), [stats]);
+  const derniers_logements_sociaux = useMemo(() => obtenir_derniere_valeur(stats, 'tauxLogementsSociaux'), [stats]);
+  const derniers_logements_vacants = useMemo(() => obtenir_derniere_valeur(stats, 'tauxDeLogementsVacants'), [stats]);
+  const derniere_pop_jeune = useMemo(() => obtenir_derniere_valeur(stats, 'pourcentageMoins20Ans'), [stats]);
 
   return (
     <div className="content-wrapper">
@@ -81,8 +80,8 @@ export default function DashboardGrid({ selectedDepartement }) {
           <div className="header-info">
             <h2 style={{ margin: 0 }}>
               {selectedDepartement
-                ? `Tableau de bord : ${selectedDepartement.nom} (${selectedDepartement.code})`
-                : modePreview ? "Aperçu des graphiques (données vides)" : "Sélectionnez un département pour voir ses statistiques"}
+                ? `Tableau de bord : ${selectedDepartement.nom} (${selectedDepartement.code}) - ${selectedDepartement.type === 'region' ? 'Région' : 'Département'}`
+                : modePreview ? "Aperçu des graphiques (données vides)" : `Sélectionnez un ${currentView === 'regions' ? 'région' : 'département'} pour voir ses statistiques`}
             </h2>
             {selectedDepartement && <p className="last-update">Données mises à jour pour 2021-2023</p>}
           </div>
@@ -123,7 +122,7 @@ export default function DashboardGrid({ selectedDepartement }) {
             )}
 
             {/* --- 4. AFFICHAGE DES COMPOSANTS --- */}
-            {(stats_departement || modePreview) && !chargement_en_cours && !erreur && (
+            {(stats || modePreview) && !chargement_en_cours && !erreur && (
               <>
                 {/* Ligne des cartes de statistiques (KPIs) */}
                 {/* Ici les données transformées sont injectées dans 'valeur' et 'annee' */}
@@ -179,7 +178,7 @@ export default function DashboardGrid({ selectedDepartement }) {
                     <h3 style={{ fontSize: '1rem', color: '#7f8c8d', textTransform: 'uppercase', marginBottom: '15px' }}>Densité actuelle</h3>
                     <div style={{ position: 'relative', display: 'inline-block' }}>
                       <p style={{ fontSize: '3rem', fontWeight: 'bold', color: '#2c3e50', margin: 0 }}>
-                        {stats_departement?.[0]?.densitePopulation ?? '—'}
+                        {stats?.[0]?.densitePopulation ?? '—'}
                       </p>
                       <span style={{ fontSize: '0.9rem', color: '#95a5a6', display: 'block' }}>Habitants / km²</span>
                     </div>
@@ -225,7 +224,7 @@ export default function DashboardGrid({ selectedDepartement }) {
                 <details className="dashboard-card debug-details" style={{ gridColumn: "span 3" }}>
                   <summary style={{ cursor: 'pointer', fontWeight: '600', color: '#34495e' }}>Visualiser les données brutes (JSON)</summary>
                   <pre className="json-preview">
-                    {JSON.stringify(stats_departement, null, 2)}
+                    {JSON.stringify(stats, null, 2)}
                   </pre>
                 </details>
               </>
