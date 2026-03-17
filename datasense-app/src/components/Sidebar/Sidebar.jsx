@@ -1,8 +1,8 @@
-import { LayoutGrid, Map, Layers } from 'lucide-react';
+import { LayoutGrid, Map, Layers, LogOut, User as UserIcon } from 'lucide-react';
 import logo from '../../assets/logo.svg';
 import './Sidebar.css';
 
-export default function Sidebar({ currentView, onViewChange }) {
+export default function Sidebar({ currentView, onViewChange, user, onLogout }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -38,6 +38,31 @@ export default function Sidebar({ currentView, onViewChange }) {
           <span>Régions</span>
         </div>
       </nav>
+
+      {user && (
+        <div className="sidebar-footer">
+          <div 
+            className={`user-info ${currentView === 'profil' ? 'active' : ''}`}
+            onClick={() => onViewChange('profil')}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="user-avatar">
+              <UserIcon size={18} />
+            </div>
+            <div className="user-details">
+              <span className="user-name">
+                {user.firstName && user.lastName 
+                  ? `${user.firstName} ${user.lastName}` 
+                  : user.user}
+              </span>
+            </div>
+          </div>
+          <button className="logout-button" onClick={onLogout}>
+            <LogOut size={18} />
+            <span>{user.roles?.[0] === 'GUEST' ? 'Se connecter' : 'Déconnexion'}</span>
+          </button>
+        </div>
+      )}
     </aside>
   );
 }

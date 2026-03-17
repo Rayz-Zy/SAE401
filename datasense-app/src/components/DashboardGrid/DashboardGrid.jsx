@@ -14,7 +14,7 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
 
   // --- 1. RÉCUPÉRATION DES DONNÉES (API) ---
   useEffect(() => {
-    if (!selectedDepartement) {
+    if (!selectedDepartement || !selectedDepartement.code) {
       setStats(null);
       return;
     }
