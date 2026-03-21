@@ -55,7 +55,7 @@ export default function Login({ onLoginSuccess, onSkip }) {
       } else {
         setError(data.message || (isRegisterMode ? 'Erreur lors de l\'inscription' : 'Identifiants invalides'));
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Erreur de connexion au serveur');
     } finally {
       setIsLoading(false);

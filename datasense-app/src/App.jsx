@@ -4,6 +4,8 @@ import Header from './components/Header/Header';
 import DashboardGrid from './components/DashboardGrid/DashboardGrid';
 import Login from './components/Login/Login';
 import Profile from './components/Profile/Profile';
+import FranceMap from './components/Map/FranceMap';
+import ComparisonView from './components/Comparison/ComparisonView';
 import './App.css';
 
 function App() {
@@ -41,6 +43,22 @@ function App() {
         )}
         {currentView === 'profil' ? (
           <Profile user={user} onBack={() => handleViewChange('accueil')} />
+        ) : currentView === 'carte' ? (
+          <div className="content-wrapper">
+            <div className="dashboard-grid" style={{ gridTemplateColumns: '1fr' }}>
+              <FranceMap 
+                onDepartementSelect={(dpt) => {
+                  setSelectedDepartement(dpt);
+                  setCurrentView('departements');
+                }}
+                selectedId={selectedDepartement?.code}
+              />
+            </div>
+          </div>
+        ) : currentView === 'comparaison' ? (
+          <div className="content-wrapper">
+            <ComparisonView />
+          </div>
         ) : (
           <DashboardGrid selectedDepartement={selectedDepartement} currentView={currentView} />
         )}

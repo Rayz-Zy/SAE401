@@ -57,7 +57,13 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
   return (
     <header className="top-header">
       <div className="header-left">
-        <h1 className="page-title">{currentView === 'accueil' ? 'Accueil' : currentView === 'regions' ? 'Régions' : 'Départements'}</h1>
+        <h1 className="page-title">
+          {currentView === 'accueil' ? 'Accueil' : 
+           currentView === 'regions' ? 'Régions' : 
+           currentView === 'carte' ? 'Carte Interactive' : 
+           currentView === 'comparaison' ? 'Comparaison' : 
+           'Départements'}
+        </h1>
       </div>
       <div className="header-center">
         <div 
@@ -76,7 +82,11 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
             <Search size={18} color="#999" />
             <input
               type="text"
-              placeholder={currentView === 'accueil' ? "Rechercher un département ou une région" : `Rechercher un ${currentView === 'regions' ? 'région' : 'département'}`}
+              placeholder={
+                currentView === 'comparaison' || currentView === 'accueil' 
+                ? "Rechercher département ou région..." 
+                : `Rechercher un ${currentView === 'regions' ? 'région' : 'département'}`
+              }
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}

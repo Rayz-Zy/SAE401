@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 16 mars 2026 à 08:53
+-- Généré le : sam. 21 mars 2026 à 21:29
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -533,6 +533,29 @@ INSERT INTO `statistique_logement` (`id`, `annee_publication`, `nombre_habitants
 (299, 2021, 1143364, 240.00, 4.33, 3.43, 0.90, 22.00, 25.00, 6.90, 13.70, 561561, 499905, 13.74, 7.83, 46.01, 7738, 7084.00, 68678, 1381, 148, 61, 3.12, 4.17, 5.92, 43.00, 22.00, '67'),
 (300, 2022, 1636156, 9255.00, 3.45, 9.25, -5.80, 25.00, 21.00, 6.60, 11.90, 807711, 724639, 28.00, 6.00, 11.00, 11364, 11229.00, 203659, 1683, 160, 358, 2.59, 0.91, 7.17, 46.00, 12.00, '92');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `email` varchar(180) NOT NULL,
+  `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`roles`)),
+  `password` varchar(255) NOT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `user`
+--
+
+INSERT INTO `user` (`id`, `email`, `roles`, `password`, `first_name`, `last_name`) VALUES
+(3, 'saidjsofiane93@gmail.com', '[\"ROLE_USER\"]', '$2y$13$OyvEf11qfne/5c6O3DjQEOweThdGq0.vrUEgD.BiSzKwuq4vt/gqO', 'Sofiane', 'Saidj'),
+(4, 'testuser@example.com', '[\"ROLE_USER\"]', '$2y$13$5ckWVkIl6XiS7mKXsQ5DSuND/CzPKHpHFycOuIjz0JIZuIeS54LNG', 'TestPrenom', 'TestNom');
+
 --
 -- Index pour les tables déchargées
 --
@@ -565,6 +588,13 @@ ALTER TABLE `statistique_logement`
   ADD KEY `IDX_57E380458837B2D3` (`code_departement`);
 
 --
+-- Index pour la table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQ_IDENTIFIER_EMAIL` (`email`);
+
+--
 -- AUTO_INCREMENT pour les tables déchargées
 --
 
@@ -579,6 +609,12 @@ ALTER TABLE `messenger_messages`
 --
 ALTER TABLE `statistique_logement`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=301;
+
+--
+-- AUTO_INCREMENT pour la table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Contraintes pour les tables déchargées
