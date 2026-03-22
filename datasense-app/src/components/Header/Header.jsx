@@ -84,8 +84,7 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
           style={{ cursor: 'pointer' }}
         >
           <img
-            src="/logo.svg"
-            onError={(e) => { e.target.src = LOGO_URL; }}
+            src={logo}
             alt="Datasense Logo"
             className="header-logo"
           />

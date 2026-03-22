@@ -196,8 +196,7 @@ export default function Login({ onLoginSuccess, onSkip }) {
         {/* Right Side: Branding Content */}
         <div className="login-brand-side">
           <img 
-            src="/logo.svg" 
-            onError={(e) => { e.target.src = LOGO_URL; }}
+            src={logo} 
             alt="DataSense Branding" 
             className="brand-logo" 
           />
