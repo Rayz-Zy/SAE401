@@ -33,7 +33,7 @@ ChartJS.register(
  * @param {string} libelle - Le texte affiché dans la légende
  * @param {string} couleur - La couleur de la ligne et du remplissage
  */
-const LineChart = ({ etiquettes, donnees, titre, libelle, couleur = 'rgba(54, 162, 235, 1)' }) => {
+const LineChart = ({ etiquettes, donnees, titre, libelle, couleur = 'rgba(54, 162, 235, 1)', additionalDatasets = [], fill = false }) => {
   // Préparation de l'objet de données formaté pour Chart.js
   const donnees_graphique = {
     labels: etiquettes,
@@ -43,11 +43,20 @@ const LineChart = ({ etiquettes, donnees, titre, libelle, couleur = 'rgba(54, 16
         data: donnees,
         borderColor: couleur,
         backgroundColor: couleur.replace('1)', '0.1)'),
-        fill: true,
+        fill: fill,
         tension: 0.4,
-        pointRadius: 4,
-        pointHoverRadius: 6,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        borderWidth: 3,
       },
+      ...additionalDatasets.map(ds => ({
+        ...ds,
+        fill: fill,
+        tension: 0.4,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        borderWidth: 3,
+      }))
     ],
   };
 

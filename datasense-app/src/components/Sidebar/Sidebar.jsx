@@ -1,4 +1,4 @@
-import { LayoutGrid, Map, Layers, LogOut, User as UserIcon } from 'lucide-react';
+import { LayoutGrid, Map, Layers, LogOut, User as UserIcon, ArrowLeftRight } from 'lucide-react';
 import logo from '../../assets/logo.svg';
 import './Sidebar.css';
 
@@ -36,6 +36,20 @@ export default function Sidebar({ currentView, onViewChange, user, onLogout }) {
         >
           <Layers size={20} />
           <span>Régions</span>
+        </div>
+        <div 
+          className={`nav-item ${currentView === 'carte' ? 'active' : ''}`}
+          onClick={() => onViewChange('carte')}
+        >
+          <Map size={20} />
+          <span>Carte Interactive</span>
+        </div>
+        <div 
+          className={`nav-item ${currentView === 'comparaison' ? 'active' : ''}`}
+          onClick={() => onViewChange('comparaison')}
+        >
+          <ArrowLeftRight size={20} />
+          <span>Comparaison</span>
         </div>
       </nav>
 

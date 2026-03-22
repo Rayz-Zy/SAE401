@@ -1,0 +1,199 @@
+.france-map-layout {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.map-sidebar {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.map-search-card, .map-info-card, .map-stats-summary {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 12px;
+}
+
+.search-input-wrapper input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+.map-info-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+  color: #95a5a6;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.dpt-badge {
+  background: #2c3e50;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.info-content h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #2c3e50;
+}
+
+.description {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.mini-stats {
+  margin-bottom: 25px;
+}
+
+.mini-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #34495e;
+}
+
+.view-details-btn {
+  width: 100%;
+  padding: 12px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.view-details-btn:hover {
+  background: #2980b9;
+}
+
+.map-stats-summary {
+  display: flex;
+  justify-content: space-around;
+  padding: 15px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}
+
+.france-map-main {
+  flex: 1;
+  background: white;
+  border-radius: 24px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.france-map-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.france-map-svg {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  filter: drop-shadow(0 10px 25px rgba(0,0,0,0.08));
+}
+
+.department-path {
+  fill: #e6ebf1; /* Darker, more visible base color */
+  stroke: #ffffff;
+  stroke-width: 0.6;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.department-path:hover, .department-path.highlight {
+  fill: #3498db;
+  filter: drop-shadow(0 0 12px rgba(52, 152, 219, 0.5));
+  transform: translateY(-2px);
+}
+
+.department-path.selected {
+  fill: #2c3e50;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
+.map-legend {
+  margin-top: 20px;
+  color: #95a5a6;
+  font-size: 0.85rem;
+  text-align: center;
+  background: #f8f9fa;
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

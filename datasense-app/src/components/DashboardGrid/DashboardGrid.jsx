@@ -1,9 +1,12 @@
 import './DashboardGrid.css';
 import React, { useState, useEffect, useMemo } from 'react';
 import LineChart from '../chart/LineChart';
+import BarChart from '../chart/BarChart';
+import DoughnutChart from '../chart/DoughnutChart';
 import StatCard from './StatCard';
 import { transformer_stats_pour_graphique, obtenir_derniere_valeur } from '../../utils/chartUtils';
-import { Users, Home, TrendingUp, Percent, Info } from 'lucide-react';
+import { Users, Home, TrendingUp, Percent, Info, Activity, PieChart as PieIcon } from 'lucide-react';
+import DataInsights from './DataInsights';
 
 export default function DashboardGrid({ selectedDepartement, currentView }) {
   // État pour stocker les données brutes de l'API
@@ -163,14 +166,26 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
 
                 {/* Graphiques d'évolution (Ligne 1) */}
                 {/* On passe 'etiquettes' (X) et 'donnees' (Y) au composant LineChart */}
-                <div className="dashboard-card" style={{ gridColumn: "span 2" }}>
-                  <LineChart
-                    etiquettes={donnees_population.etiquettes}
-                    donnees={donnees_population.donnees}
-                    titre="Évolution de la population"
-                    libelle="Nombre d'habitants"
-                    couleur="rgba(75, 192, 192, 1)"
-                  />
+                {/* Graphiques Dynamiques (Ligne 1) */}
+                <div className="dashboard-card" style={{ gridColumn: "span 1" }}>
+                  <div className="card-header-icon" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px', padding: '15px' }}>
+                    <Activity size={18} color="#ff6384" />
+                    <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#2c3e50' }}>Social (Chômage/Pauvreté)</h3>
+                  </div>
+                  <div style={{ padding: '0 15px 15px' }}>
+                    <BarChart 
+                      etiquettes={donnees_chomage.etiquettes}
+                      donnees={donnees_chomage.donnees}
+                      titre=""
+                      libelle="Chômage (%)"
+                      couleur="rgba(255, 99, 132, 0.7)"
+                      additionalDatasets={[{
+                        label: 'Pauvreté (%)',
+                        data: donnees_pauvrete.donnees,
+                        backgroundColor: 'rgba(255, 159, 64, 0.7)'
+                      }]}
+                    />
+                  </div>
                 </div>
 
                 <div className="dashboard-card">
@@ -189,34 +204,51 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
                   </div>
                 </div>
 
-                {/* Second Row Charts */}
-                <div className="dashboard-card">
-                  <LineChart
-                    etiquettes={donnees_chomage.etiquettes}
-                    donnees={donnees_chomage.donnees}
-                    titre="Taux de chômage (%)"
-                    libelle="Chômage T4"
-                    couleur="rgba(255, 99, 132, 1)"
-                  />
+                {/* Graphiques de Contexte (Ligne 2) */}
+                <div className="dashboard-card" style={{ gridColumn: "span 1" }}>
+                  <div style={{ padding: '20px' }}>
+                    <LineChart
+                      etiquettes={donnees_population.etiquettes}
+                      donnees={donnees_population.donnees}
+                      titre="Évolution de la population"
+                      libelle="Habitants"
+                      couleur="rgba(75, 192, 192, 1)"
+                      fill={true}
+                    />
+                  </div>
                 </div>
 
                 <div className="dashboard-card">
-                  <LineChart
-                    etiquettes={donnees_pauvrete.etiquettes}
-                    donnees={donnees_pauvrete.donnees}
-                    titre="Taux de pauvreté (%)"
-                    libelle="Pauvreté"
-                    couleur="rgba(255, 159, 64, 1)"
+                  <div className="card-header-icon" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
+                    <PieIcon size={18} color="#e67e22" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', color: '#2c3e50' }}>Répartition du Logement</h3>
+                  </div>
+                  <DoughnutChart 
+                    etiquettes={['Social', 'Vacant', 'Privé/Autre']}
+                    donnees={[
+                      derniers_logements_sociaux?.valeur || 0,
+                      derniers_logements_vacants?.valeur || 0,
+                      100 - ((derniers_logements_sociaux?.valeur || 0) + (derniers_logements_vacants?.valeur || 0))
+                    ]}
+                    titre="Composition du parc"
+                    couleurs={['#3498db', '#e67e22', '#ecf0f1']}
                   />
                 </div>
 
+                <DataInsights stats={stats} />
+
                 <div className="dashboard-card">
+                  <div className="card-header-icon" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
+                    <Home size={18} color="#9966ff" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', color: '#2c3e50' }}>Volume de Logements</h3>
+                  </div>
                   <LineChart
                     etiquettes={donnees_logements.etiquettes}
                     donnees={donnees_logements.donnees}
                     titre="Évolution des logements"
                     libelle="Nombre de logements"
                     couleur="rgba(153, 102, 255, 1)"
+                    fill={true}
                   />
                 </div>
 

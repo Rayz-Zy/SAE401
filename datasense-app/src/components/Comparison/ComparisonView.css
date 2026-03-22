@@ -1,0 +1,140 @@
+.comparison-container {
+  padding: 40px; /* Increase padding for better breathing room from top/left */
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.comparison-selectors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.selector-box {
+  flex: 1;
+  max-width: 300px;
+  position: relative;
+}
+
+.selector-box h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.search-field input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  color: #2c3e50; /* Add explicit dark color */
+}
+
+.vs-badge {
+  background: #2c3e50;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-results-mini {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.search-item-mini {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-item-mini:hover {
+  background: #f0f7ff;
+  color: #3498db;
+}
+
+.entity-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 10px;
+  text-transform: uppercase;
+}
+
+.entity-badge.departement {
+  background: #eef2f7;
+  color: #7f8c8d;
+  border: 1px solid #dcdde1;
+}
+
+.entity-badge.region {
+  background: #e1f5fe;
+  color: #03a9f4;
+  border: 1px solid #b3e5fc;
+}
+
+.comparison-charts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.comparison-card {
+  background: white;
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header-icon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.card-header-icon h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
