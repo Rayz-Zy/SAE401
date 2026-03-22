@@ -41,7 +41,11 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
         return res.json();
       })
       .then(donnees => {
-        setStats(donnees);
+        // Trier les données par année croissante pour assurer la cohérence des calculs et graphiques
+        const donneesTriees = Array.isArray(donnees) 
+          ? [...donnees].sort((a, b) => a.anneePublication - b.anneePublication)
+          : donnees;
+        setStats(donneesTriees);
         definir_chargement_en_cours(false);
       })
       .catch(err => {
