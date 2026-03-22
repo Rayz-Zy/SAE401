@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Lock, Mail, AlertCircle, Loader2, UserPlus, User } from 'lucide-react';
 import './Login.css';
 import logo from '../../assets/logo.svg';
-import { API_BASE_URL, LOGO_URL } from '../../config';
+import { useApi } from '../../context/ApiContext';
+import { LOGO_URL } from '../../config';
 
 export default function Login({ onLoginSuccess, onSkip }) {
+  const { apiBaseUrl } = useApi();
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +36,7 @@ export default function Login({ onLoginSuccess, onSkip }) {
         ? { email, password, firstName, lastName }
         : { email, password };
 
-      const response = await fetch(`${API_BASE_URL}/api/${endpoint}`, {
+      const response = await fetch(`${apiBaseUrl}/api/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

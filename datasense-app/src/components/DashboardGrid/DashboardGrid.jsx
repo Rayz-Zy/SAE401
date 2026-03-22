@@ -8,9 +8,10 @@ import StatCard from './StatCard';
 import { transformer_stats_pour_graphique, obtenir_derniere_valeur } from '../../utils/chartUtils';
 import { Users, Home, TrendingUp, Percent, Info, Activity, PieChart as PieIcon, Lightbulb } from 'lucide-react';
 import DataInsights from './DataInsights';
-import { API_BASE_URL } from '../../config';
+import { useApi } from '../../context/ApiContext';
 
 export default function DashboardGrid({ selectedDepartement, currentView }) {
+  const { apiBaseUrl } = useApi();
   // État pour stocker les données brutes de l'API
   const [stats, setStats] = useState(null);
   const [chargement_en_cours, definir_chargement_en_cours] = useState(false);
@@ -29,8 +30,8 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
 
     const entityType = selectedDepartement.type || (currentView === 'regions' ? 'region' : 'departement');
     const endpoint = entityType === 'region'
-      ? `${API_BASE_URL}/statistique/region/${selectedDepartement.code}`
-      : `${API_BASE_URL}/statistique/logement/${selectedDepartement.code}`;
+      ? `${apiBaseUrl}/statistique/region/${selectedDepartement.code}`
+      : `${apiBaseUrl}/statistique/logement/${selectedDepartement.code}`;
 
     fetch(endpoint)
       .then(res => {

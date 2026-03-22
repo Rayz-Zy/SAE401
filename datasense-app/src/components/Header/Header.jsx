@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Globe, Server } from 'lucide-react';
 import logo from '../../assets/logo.svg';
-import { API_BASE_URL, LOGO_URL } from '../../config';
+import { useApi } from '../../context/ApiContext';
+import { LOGO_URL } from '../../config';
 import './Header.css';
 
 export default function Header({ onDepartementSelect, currentView, onViewChange }) {
+  const { apiBaseUrl, isLocalMode, toggleApiMode } = useApi();
   const [searchTerm, setSearchTerm] = useState('');
   const [entities, setEntities] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
@@ -12,11 +14,11 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
   // 1. Appel API au montage ou changement de vue
   useEffect(() => {
     if (currentView === 'accueil' || currentView === 'departements' || currentView === 'regions') {
-      const fetchDepartments = fetch(`${API_BASE_URL}/statistique/departement`)
+      const fetchDepartments = fetch(`${apiBaseUrl}/statistique/departement`)
         .then(res => res.json())
         .then(data => data.map(d => ({ ...d, type: 'departement' })));
 
-      const fetchRegions = fetch(`${API_BASE_URL}/statistique/region`)
+      const fetchRegions = fetch(`${apiBaseUrl}/statistique/region`)
         .then(res => res.json())
         .then(data => data.map(r => ({ ...r, type: 'region' })));
 
@@ -129,6 +131,16 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
             </ul>
           )}
         </div>
+      </div>
+      <div className="header-right">
+        <button 
+          className={`api-toggle-btn ${isLocalMode ? 'local' : 'online'}`}
+          onClick={toggleApiMode}
+          title={isLocalMode ? "Passer en mode en ligne" : "Passer en mode local (127.0.0.1:8000)"}
+        >
+          {isLocalMode ? <Server size={20} /> : <Globe size={20} />}
+          <span>{isLocalMode ? 'API Locale' : 'API en ligne'}</span>
+        </button>
       </div>
     </header>
   );

@@ -30,15 +30,15 @@ class StatistiqueLogement
     private ?string $densitePopulation = null;
 
     #[ORM\Column(name: 'variation_population_10_ans', type: Types::DECIMAL, precision: 6, scale: 2, nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?string $variationPopulation10Ans = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2, nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?string $contributionSoldeNaturel = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2, nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?string $contributionSoldeMigratoire = null;
 
     #[ORM\Column(name: 'pourcentage_moins_20_ans', type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
@@ -46,7 +46,7 @@ class StatistiqueLogement
     private ?string $pourcentageMoins20Ans = null;
 
     #[ORM\Column(name: 'pourcentage_plus_60_ans', type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?string $pourcentagePlus60Ans = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
@@ -63,7 +63,7 @@ class StatistiqueLogement
     private ?int $nombreLogements = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?int $nombreResidencesPrincipales = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
@@ -76,44 +76,44 @@ class StatistiqueLogement
     private ?string $tauxLogementsVacants = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?string $tauxLogementsIndividuels = null;
 
     #[ORM\Column(name: 'moyenne_annuelle_construction_neuve_10_ans', nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?int $moyenneAnnuelleConstructionNeuve10Ans = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    #[Groups(['logement', 'departement', 'region'])]
+    // #[Groups(['logement', 'departement', 'region'])]
     private ?string $construction = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?int $parcSocialNombreLogements = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['logement', 'departement', 'region'])]
+    // #[Groups(['logement', 'departement', 'region'])]
     #[SerializedName('logementsMisEnLocation')]
     private ?int $parcSocialLogementsMisLocation = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?int $parcSocialLogementsDemolis = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?int $parcSocialVentesPersonnesPhysiques = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?string $parcSocialTauxLogementsVacants = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
-    #[Groups(['logement'])]
+    // #[Groups(['logement'])]
     private ?string $parcSocialTauxLogementsIndividuels = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2, nullable: true)]
-    #[Groups(['logement', 'departement', 'region'])]
+    // #[Groups(['logement', 'departement', 'region'])]
     #[SerializedName('loyerMoyen')]
     private ?string $parcSocialLoyerMoyen = null;
 
