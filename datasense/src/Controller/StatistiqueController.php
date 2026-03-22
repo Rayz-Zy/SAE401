@@ -77,6 +77,8 @@ final class StatistiqueController extends AbstractController
                     'tauxLogementsSociaux' => 0,
                     'tauxDeLogementsVacants' => 0,
                     'pourcentageMoins20Ans' => 0,
+                    'parcSocialAgeMoyen' => 0,
+                    'parcSocialTauxLogementsEnergivores' => 0,
                 ];
             }
 
@@ -88,6 +90,8 @@ final class StatistiqueController extends AbstractController
             $statsAgregees[$annee]['tauxLogementsSociaux'] += (float)$s->getTauxLogementsSociaux();
             $statsAgregees[$annee]['tauxDeLogementsVacants'] += (float)$s->getTauxLogementsVacants();
             $statsAgregees[$annee]['pourcentageMoins20Ans'] += (float)$s->getPourcentageMoins20Ans();
+            $statsAgregees[$annee]['parcSocialAgeMoyen'] += (float)$s->getParcSocialAgeMoyen();
+            $statsAgregees[$annee]['parcSocialTauxLogementsEnergivores'] += (float)$s->getParcSocialTauxLogementsEnergivores();
             $statsAgregees[$annee]['count']++;
         }
 
@@ -101,6 +105,8 @@ final class StatistiqueController extends AbstractController
                 $data['tauxLogementsSociaux'] = round($data['tauxLogementsSociaux'] / $data['count'], 2);
                 $data['tauxDeLogementsVacants'] = round($data['tauxDeLogementsVacants'] / $data['count'], 2);
                 $data['pourcentageMoins20Ans'] = round($data['pourcentageMoins20Ans'] / $data['count'], 2);
+                $data['parcSocialAgeMoyen'] = round($data['parcSocialAgeMoyen'] / $data['count'], 2);
+                $data['parcSocialTauxLogementsEnergivores'] = round($data['parcSocialTauxLogementsEnergivores'] / $data['count'], 2);
             }
             unset($data['count']);
             $resultat[] = $data;
