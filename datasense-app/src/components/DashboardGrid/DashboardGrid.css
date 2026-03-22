@@ -15,10 +15,10 @@
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 20px;
-  height: 105%;
   width: 100%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden; /* Added to keep content inside */
 }
 
 .dashboard-card:hover {
@@ -44,7 +44,11 @@
 }
 
 .dashboard-stat-row {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
 }
 
 .json-preview {
@@ -64,16 +68,16 @@
 }
 
 /* Responsiveness */
+@media (max-width: 1300px) {
+  .dashboard-stat-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
 @media (max-width: 1200px) {
   .dashboard-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .dashboard-stat-row {
-    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 

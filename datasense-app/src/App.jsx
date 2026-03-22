@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar/Sidebar';
 import Header from './components/Header/Header';
 import DashboardGrid from './components/DashboardGrid/DashboardGrid';
@@ -13,12 +13,27 @@ function App() {
   const [currentView, setCurrentView] = useState('accueil'); // 'accueil', 'departements' ou 'regions'
   const [user, setUser] = useState(null);
 
+  // Charger l'utilisateur au démarrage
+  useEffect(() => {
+    const savedUser = localStorage.getItem('datasense_user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error("Erreur lors de la récupération de la session :", e);
+        localStorage.removeItem('datasense_user');
+      }
+    }
+  }, []);
+
   const handleLoginSuccess = (userData) => {
     setUser(userData);
+    localStorage.setItem('datasense_user', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem('datasense_user');
   };
 
   const handleViewChange = (newView) => {
@@ -27,7 +42,9 @@ function App() {
   };
 
   const handleSkipLogin = () => {
-    setUser({ user: 'Visiteur', roles: ['GUEST'] });
+    const guestUser = { user: 'Visiteur', roles: ['GUEST'] };
+    setUser(guestUser);
+    localStorage.setItem('datasense_user', JSON.stringify(guestUser));
   };
 
   if (!user) {

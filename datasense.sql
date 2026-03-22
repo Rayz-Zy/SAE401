@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 21 mars 2026 à 21:29
+-- Généré le : dim. 22 mars 2026 à 16:17
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -138,6 +138,25 @@ INSERT INTO `departement` (`code`, `nom`, `code_region`) VALUES
 ('972', 'Martinique', '2'),
 ('973', 'Guyane', '3'),
 ('974', 'La Réunion', '4');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `doctrine_migration_versions`
+--
+
+CREATE TABLE `doctrine_migration_versions` (
+  `version` varchar(191) NOT NULL,
+  `executed_at` datetime DEFAULT NULL,
+  `execution_time` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `doctrine_migration_versions`
+--
+
+INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
+('DoctrineMigrations\\Version20260311080523', '2026-03-18 08:18:17', 0);
 
 -- --------------------------------------------------------
 
@@ -553,8 +572,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `email`, `roles`, `password`, `first_name`, `last_name`) VALUES
-(3, 'saidjsofiane93@gmail.com', '[\"ROLE_USER\"]', '$2y$13$OyvEf11qfne/5c6O3DjQEOweThdGq0.vrUEgD.BiSzKwuq4vt/gqO', 'Sofiane', 'Saidj'),
-(4, 'testuser@example.com', '[\"ROLE_USER\"]', '$2y$13$5ckWVkIl6XiS7mKXsQ5DSuND/CzPKHpHFycOuIjz0JIZuIeS54LNG', 'TestPrenom', 'TestNom');
+(2, 'mailysborel@test.com', '[\"ROLE_USER\"]', '$2y$13$jidplEM91RmKF3PHiTaWYOdEK77rASDfhGZKNJzYlRraFAsce/JxG', 'borel', 'mailys'),
+(3, 'test@test.com', '[\"ROLE_USER\"]', '$2y$13$2fzXUOmB0kyQlJqMqIN91OllFr86sqp33nJxE8HQc5eI5kBTDdBf.', 'Maxime', 'monnerat');
 
 --
 -- Index pour les tables déchargées
@@ -566,6 +585,12 @@ INSERT INTO `user` (`id`, `email`, `roles`, `password`, `first_name`, `last_name
 ALTER TABLE `departement`
   ADD PRIMARY KEY (`code`),
   ADD KEY `IDX_C1765B6370E4A9D4` (`code_region`);
+
+--
+-- Index pour la table `doctrine_migration_versions`
+--
+ALTER TABLE `doctrine_migration_versions`
+  ADD PRIMARY KEY (`version`);
 
 --
 -- Index pour la table `messenger_messages`
@@ -614,7 +639,7 @@ ALTER TABLE `statistique_logement`
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Contraintes pour les tables déchargées

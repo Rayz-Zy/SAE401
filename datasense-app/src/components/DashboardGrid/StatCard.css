@@ -61,6 +61,13 @@
     font-weight: 500;
 }
 
+.stat-card-text {
+    font-size: 0.9rem;
+    color: #34495e;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
 .stat-card-icon {
     font-size: 1.5rem;
     opacity: 0.8;

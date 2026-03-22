@@ -4,6 +4,7 @@ import BarChart from '../chart/BarChart';
 import DoughnutChart from '../chart/DoughnutChart';
 import { Search, ArrowLeftRight, TrendingUp, Home, Activity } from 'lucide-react';
 import './ComparisonView.css';
+import { API_BASE_URL } from '../../config';
 
 export default function ComparisonView() {
   const [entiteA, setEntiteA] = useState(null);
@@ -19,8 +20,8 @@ export default function ComparisonView() {
 
   useEffect(() => {
     // Fetch all departments/regions for selection
-    const fetchDeps = fetch('http://127.0.0.1:8000/statistique/departement').then(res => res.json());
-    const fetchRegs = fetch('http://127.0.0.1:8000/statistique/region').then(res => res.json());
+    const fetchDeps = fetch(`${API_BASE_URL}/statistique/departement`).then(res => res.json());
+    const fetchRegs = fetch(`${API_BASE_URL}/statistique/region`).then(res => res.json());
     
     Promise.all([fetchDeps, fetchRegs])
       .then(([deps, regs]) => {
@@ -43,8 +44,8 @@ export default function ComparisonView() {
 
   const fetchStats = (ent, setter) => {
     const endpoint = ent.type === 'region' 
-      ? `http://127.0.0.1:8000/statistique/region/${ent.code}`
-      : `http://127.0.0.1:8000/statistique/logement/${ent.code}`;
+      ? `${API_BASE_URL}/statistique/region/${ent.code}`
+      : `${API_BASE_URL}/statistique/logement/${ent.code}`;
     
     fetch(endpoint)
       .then(res => res.json())

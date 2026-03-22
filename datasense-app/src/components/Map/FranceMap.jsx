@@ -27,6 +27,11 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
               placeholder="Chercher un département..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filteredDeps.length > 0) {
+                  onDepartementSelect({ code: filteredDeps[0].id, nom: filteredDeps[0].nom, type: 'departement' });
+                }
+              }}
             />
           </div>
         </div>

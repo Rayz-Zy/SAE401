@@ -1,5 +1,6 @@
 import { LayoutGrid, Map, Layers, LogOut, User as UserIcon, ArrowLeftRight } from 'lucide-react';
 import logo from '../../assets/logo.svg';
+import { LOGO_URL } from '../../config';
 import './Sidebar.css';
 
 export default function Sidebar({ currentView, onViewChange, user, onLogout }) {
@@ -11,7 +12,12 @@ export default function Sidebar({ currentView, onViewChange, user, onLogout }) {
           className="logo-link" 
           style={{ cursor: 'pointer' }}
         >
-          <img src={logo} alt="Datasense Logo" className="sidebar-logo" />
+          <img 
+            src="/logo.svg" 
+            onError={(e) => { e.target.src = LOGO_URL; }}
+            alt="Datasense Logo" 
+            className="sidebar-logo" 
+          />
         </div>
       </div>
       

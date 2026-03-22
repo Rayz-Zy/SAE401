@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Lock, Mail, AlertCircle, Loader2, UserPlus, User } from 'lucide-react';
 import './Login.css';
 import logo from '../../assets/logo.svg';
+import { API_BASE_URL, LOGO_URL } from '../../config';
 
 export default function Login({ onLoginSuccess, onSkip }) {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -33,7 +34,7 @@ export default function Login({ onLoginSuccess, onSkip }) {
         ? { email, password, firstName, lastName }
         : { email, password };
 
-      const response = await fetch(`http://127.0.0.1:8000/api/${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}/api/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -192,7 +193,12 @@ export default function Login({ onLoginSuccess, onSkip }) {
 
         {/* Right Side: Branding Content */}
         <div className="login-brand-side">
-          <img src={logo} alt="DataSense Branding" className="brand-logo" />
+          <img 
+            src="/logo.svg" 
+            onError={(e) => { e.target.src = LOGO_URL; }}
+            alt="DataSense Branding" 
+            className="brand-logo" 
+          />
         </div>
       </div>
     </div>

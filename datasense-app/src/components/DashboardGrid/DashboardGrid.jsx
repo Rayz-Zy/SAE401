@@ -3,10 +3,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import LineChart from '../chart/LineChart';
 import BarChart from '../chart/BarChart';
 import DoughnutChart from '../chart/DoughnutChart';
+import MixedChart from '../chart/MixedChart';
 import StatCard from './StatCard';
 import { transformer_stats_pour_graphique, obtenir_derniere_valeur } from '../../utils/chartUtils';
-import { Users, Home, TrendingUp, Percent, Info, Activity, PieChart as PieIcon } from 'lucide-react';
+import { Users, Home, TrendingUp, Percent, Info, Activity, PieChart as PieIcon, Lightbulb } from 'lucide-react';
 import DataInsights from './DataInsights';
+import { API_BASE_URL } from '../../config';
 
 export default function DashboardGrid({ selectedDepartement, currentView }) {
   // État pour stocker les données brutes de l'API
@@ -27,8 +29,8 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
 
     const entityType = selectedDepartement.type || (currentView === 'regions' ? 'region' : 'departement');
     const endpoint = entityType === 'region'
-      ? `http://127.0.0.1:8000/statistique/region/${selectedDepartement.code}`
-      : `http://127.0.0.1:8000/statistique/logement/${selectedDepartement.code}`;
+      ? `${API_BASE_URL}/statistique/region/${selectedDepartement.code}`
+      : `${API_BASE_URL}/statistique/logement/${selectedDepartement.code}`;
 
     fetch(endpoint)
       .then(res => {
@@ -69,11 +71,23 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
     [stats]
   );
 
+  const donnees_age_moyen = useMemo(() =>
+    transformer_stats_pour_graphique(stats, 'parcSocialAgeMoyen'),
+    [stats]
+  );
+
+  const donnees_energivores = useMemo(() =>
+    transformer_stats_pour_graphique(stats, 'parcSocialTauxLogementsEnergivores'),
+    [stats]
+  );
+
   // --- 3. EXTRACTION DES DERNIÈRES VALEURS (KPIs) ---
   const derniere_population = useMemo(() => obtenir_derniere_valeur(stats, 'nombreHabitants'), [stats]);
   const derniers_logements_sociaux = useMemo(() => obtenir_derniere_valeur(stats, 'tauxLogementsSociaux'), [stats]);
   const derniers_logements_vacants = useMemo(() => obtenir_derniere_valeur(stats, 'tauxDeLogementsVacants'), [stats]);
   const derniere_pop_jeune = useMemo(() => obtenir_derniere_valeur(stats, 'pourcentageMoins20Ans'), [stats]);
+  const derniere_densite = useMemo(() => obtenir_derniere_valeur(stats, 'densitePopulation'), [stats]);
+  const dernier_chomage = useMemo(() => obtenir_derniere_valeur(stats, 'tauxChomageT4'), [stats]);
 
   return (
     <div className="content-wrapper">
@@ -129,7 +143,7 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
               <>
                 {/* Ligne des cartes de statistiques (KPIs) */}
                 {/* Ici les données transformées sont injectées dans 'valeur' et 'annee' */}
-                <div className="dashboard-stat-row" style={{ gridColumn: "span 3", display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
+                <div className="dashboard-stat-row" style={{ gridColumn: "span 3" }}>
                   <StatCard
                     libelle="Population totale"
                     valeur={derniere_population?.valeur}
@@ -139,28 +153,26 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
                     couleur="#4bc0c0"
                   />
                   <StatCard
-                    libelle="Logements Sociaux"
-                    valeur={derniers_logements_sociaux?.valeur}
-                    annee={derniers_logements_sociaux?.annee}
-                    unite="%"
-                    icone={<Home size={24} />}
+                    libelle="Densité Population"
+                    valeur={derniere_densite?.valeur}
+                    annee={derniere_densite?.annee}
+                    unite="hab/km²"
+                    icone={<Activity size={24} />}
                     couleur="#3498db"
                   />
                   <StatCard
-                    libelle="Logements Vacants"
-                    valeur={derniers_logements_vacants?.valeur}
-                    annee={derniers_logements_vacants?.annee}
+                    libelle="Taux de Chômage"
+                    valeur={dernier_chomage?.valeur}
+                    annee={dernier_chomage?.annee}
                     unite="%"
-                    icone={<Percent size={24} />}
+                    icone={<TrendingUp size={24} />}
                     couleur="#e67e22"
                   />
                   <StatCard
-                    libelle="Moins de 20 ans"
-                    valeur={derniere_pop_jeune?.valeur}
-                    annee={derniere_pop_jeune?.annee}
-                    unite="%"
-                    icone={<TrendingUp size={24} />}
-                    couleur="#9b59b6"
+                    libelle="Insights Flash"
+                    valeur={<DataInsights stats={stats} />}
+                    couleur="#f1c40f"
+                    icone={<Lightbulb size={24} />}
                   />
                 </div>
 
@@ -173,7 +185,7 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
                     <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#2c3e50' }}>Social (Chômage/Pauvreté)</h3>
                   </div>
                   <div style={{ padding: '0 15px 15px' }}>
-                    <BarChart 
+                    <BarChart
                       etiquettes={donnees_chomage.etiquettes}
                       donnees={donnees_chomage.donnees}
                       titre=""
@@ -188,21 +200,6 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
                   </div>
                 </div>
 
-                <div className="dashboard-card">
-                  <div style={{ textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <h3 style={{ fontSize: '1rem', color: '#7f8c8d', textTransform: 'uppercase', marginBottom: '15px' }}>Densité actuelle</h3>
-                    <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <p style={{ fontSize: '3rem', fontWeight: 'bold', color: '#2c3e50', margin: 0 }}>
-                        {stats?.[0]?.densitePopulation ?? '—'}
-                      </p>
-                      <span style={{ fontSize: '0.9rem', color: '#95a5a6', display: 'block' }}>Habitants / km²</span>
-                    </div>
-                    <div style={{ marginTop: '20px', padding: '10px', background: '#f8f9fa', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Info size={16} color="#3498db" />
-                      <span style={{ fontSize: '0.8rem', color: '#7f8c8d' }}>Dernier recensement (2023)</span>
-                    </div>
-                  </div>
-                </div>
 
                 {/* Graphiques de Contexte (Ligne 2) */}
                 <div className="dashboard-card" style={{ gridColumn: "span 1" }}>
@@ -219,37 +216,59 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
                 </div>
 
                 <div className="dashboard-card">
-                  <div className="card-header-icon" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
+                  <div className="card-header-icon" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px', padding: '15px' }}>
                     <PieIcon size={18} color="#e67e22" />
-                    <h3 style={{ margin: 0, fontSize: '1rem', color: '#2c3e50' }}>Répartition du Logement</h3>
+                    <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#2c3e50' }}>Répartition du Logement</h3>
                   </div>
-                  <DoughnutChart 
-                    etiquettes={['Social', 'Vacant', 'Privé/Autre']}
-                    donnees={[
-                      derniers_logements_sociaux?.valeur || 0,
-                      derniers_logements_vacants?.valeur || 0,
-                      100 - ((derniers_logements_sociaux?.valeur || 0) + (derniers_logements_vacants?.valeur || 0))
-                    ]}
-                    titre="Composition du parc"
-                    couleurs={['#3498db', '#e67e22', '#ecf0f1']}
-                  />
+                  <div style={{ padding: '0 15px 15px' }}>
+                    <DoughnutChart
+                      etiquettes={['Social', 'Vacant', 'Privé/Autre']}
+                      donnees={[
+                        derniers_logements_sociaux?.valeur || 0,
+                        derniers_logements_vacants?.valeur || 0,
+                        100 - ((derniers_logements_sociaux?.valeur || 0) + (derniers_logements_vacants?.valeur || 0))
+                      ]}
+                      titre="Composition du parc"
+                      couleurs={['#3498db', '#e67e22', '#ecf0f1']}
+                    />
+                  </div>
                 </div>
 
-                <DataInsights stats={stats} />
+                <div className="dashboard-card" style={{ gridColumn: "span 2" }}>
+                  <div className="card-header-icon" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px', padding: '15px' }}>
+                    <Home size={18} color="#9b59b6" />
+                    <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#2c3e50' }}>Performance du Parc Social</h3>
+                  </div>
+                  <div style={{ padding: '0 15px 15px' }}>
+                    <MixedChart
+                      etiquettes={donnees_age_moyen.etiquettes}
+                      donneesBar={donnees_age_moyen.donnees}
+                      donneesLine={donnees_energivores.donnees}
+                      libelleBar="Âge moyen du parc (ans)"
+                      libelleLine="Taux de logements énergivores (%)"
+                      titre="Âge vs Performance Énergétique"
+                      couleurBar="rgba(155, 89, 182, 0.6)"
+                      couleurLine="rgba(231, 76, 60, 1)"
+                    />
+                  </div>
+                </div>
+
 
                 <div className="dashboard-card">
-                  <div className="card-header-icon" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
+                  <div className="card-header-icon" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px', padding: '15px' }}>
                     <Home size={18} color="#9966ff" />
-                    <h3 style={{ margin: 0, fontSize: '1rem', color: '#2c3e50' }}>Volume de Logements</h3>
+                    <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#2c3e50' }}>Volume de Logements</h3>
                   </div>
-                  <LineChart
-                    etiquettes={donnees_logements.etiquettes}
-                    donnees={donnees_logements.donnees}
-                    titre="Évolution des logements"
-                    libelle="Nombre de logements"
-                    couleur="rgba(153, 102, 255, 1)"
-                    fill={true}
-                  />
+                  <div style={{ padding: '0 15px 15px' }}>
+                    <LineChart
+                      etiquettes={donnees_logements.etiquettes}
+                      donnees={donnees_logements.donnees}
+                      titre="Évolution des logements"
+                      libelle="Nombre de logements"
+                      couleur="rgba(153, 102, 255, 1)"
+                      fill={true}
+                    />
+                  </div>
                 </div>
 
                 {/* Debug Section */}

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import logo from '../../assets/logo.svg';
+import { API_BASE_URL, LOGO_URL } from '../../config';
 import './Header.css';
 
 export default function Header({ onDepartementSelect, currentView, onViewChange }) {
@@ -11,11 +12,11 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
   // 1. Appel API au montage ou changement de vue
   useEffect(() => {
     if (currentView === 'accueil' || currentView === 'departements' || currentView === 'regions') {
-      const fetchDepartments = fetch('http://127.0.0.1:8000/statistique/departement')
+      const fetchDepartments = fetch(`${API_BASE_URL}/statistique/departement`)
         .then(res => res.json())
         .then(data => data.map(d => ({ ...d, type: 'departement' })));
 
-      const fetchRegions = fetch('http://127.0.0.1:8000/statistique/region')
+      const fetchRegions = fetch(`${API_BASE_URL}/statistique/region`)
         .then(res => res.json())
         .then(data => data.map(r => ({ ...r, type: 'region' })));
 
@@ -54,6 +55,12 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
     setIsFocused(false);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && filteredEntities.length > 0) {
+      handleSelect(filteredEntities[0]);
+    }
+  };
+
   return (
     <header className="top-header">
       <div className="header-left">
@@ -74,7 +81,12 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
           className="logo-link"
           style={{ cursor: 'pointer' }}
         >
-          <img src={logo} alt="Datasense Logo" className="header-logo" />
+          <img 
+            src="/logo.svg" 
+            onError={(e) => { e.target.src = LOGO_URL; }}
+            alt="Datasense Logo" 
+            className="header-logo" 
+          />
         </div>
 
         <div className="search-container">
@@ -92,6 +104,7 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
               onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 150)}
+              onKeyDown={handleKeyDown}
             />
           </div>
 

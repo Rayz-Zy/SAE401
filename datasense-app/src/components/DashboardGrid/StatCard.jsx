@@ -12,22 +12,26 @@ import './StatCard.css';
  * @param {ReactNode} icone - L'icône Lucide à afficher
  * @param {string} couleur - La couleur thématique de la carte
  */
-const StatCard = ({ libelle, valeur, unite, annee, icone, couleur }) => {
-    // Formate les grands nombres avec des espaces pour la lisibilité (ex: 1 436 079)
+const StatCard = ({ libelle, valeur, unite, annee, icone, couleur, isRef = false }) => {
+    // Formate les grands nombres avec des espaces pour la lisibilité
+    const est_nombre = typeof valeur === 'number';
+    
     const formater_valeur = (val) => {
-        if (typeof val !== 'number') return val;
+        if (!est_nombre) return val;
         return new Intl.NumberFormat('fr-FR').format(val);
     };
 
     return (
-        <div className="stat-card" style={{ borderLeft: `4px solid ${couleur || '#3498db'}` }}>
-            <div className="stat-card-content">
+        <div className={`stat-card ${isRef ? 'ref-card' : ''}`} style={{ borderLeft: `4px solid ${couleur || '#3498db'}` }}>
+            <div className="stat-card-content" style={{ width: '100%' }}>
                 <div className="stat-card-header">
                     <span className="stat-card-label">{libelle}</span>
                     {annee && <span className="stat-card-year">{annee}</span>}
                 </div>
-                <div className="stat-card-body">
-                    <span className="stat-card-value">{formater_valeur(valeur)}</span>
+                <div className="stat-card-body" style={{ display: 'flex', flexDirection: est_nombre ? 'row' : 'column', alignItems: est_nombre ? 'baseline' : 'flex-start' }}>
+                    <span className={est_nombre ? "stat-card-value" : "stat-card-text"}>
+                        {formater_valeur(valeur)}
+                    </span>
                     {unite && <span className="stat-card-unit">{unite}</span>}
                 </div>
             </div>
