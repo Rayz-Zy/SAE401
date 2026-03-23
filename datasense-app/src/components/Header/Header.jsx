@@ -90,46 +90,48 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
           />
         </div>
 
-        <div className="search-container">
-          <div className="search-bar">
-            <Search size={18} color="#999" />
-            <input
-              type="text"
-              placeholder={
-                currentView === 'comparaison' || currentView === 'accueil'
-                  ? "Rechercher département ou région..."
-                  : `Rechercher un ${currentView === 'regions' ? 'région' : 'département'}`
-              }
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setTimeout(() => setIsFocused(false), 150)}
-              onKeyDown={handleKeyDown}
-            />
-          </div>
+        {currentView !== 'carte' && currentView !== 'comparaison' && (
+          <div className="search-container">
+            <div className="search-bar">
+              <Search size={18} color="#999" />
+              <input
+                type="text"
+                placeholder={
+                  currentView === 'accueil'
+                    ? "Rechercher département ou région..."
+                    : `Rechercher un ${currentView === 'regions' ? 'région' : 'département'}`
+                }
+                className="search-input"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setTimeout(() => setIsFocused(false), 150)}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
 
-          {/* Menu déroulant d'autocomplétion */}
-          {isFocused && searchTerm && filteredEntities.length > 0 && (
-            <ul className="search-results">
-              {filteredEntities.map(ent => (
-                <li
-                  key={`${ent.type}-${ent.code}`}
-                  className="search-item"
-                  onClick={() => handleSelect(ent)}
-                >
-                  <div className="search-item-info">
-                    <span className="search-item-code">{ent.code}</span>
-                    <span className="search-item-nom">{ent.nom}</span>
-                  </div>
-                  <span className={`search-item-type ${ent.type}`}>
-                    {ent.type === 'region' ? 'Région' : 'Dépt'}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+            {/* Menu déroulant d'autocomplétion */}
+            {isFocused && searchTerm && filteredEntities.length > 0 && (
+              <ul className="search-results">
+                {filteredEntities.map(ent => (
+                  <li
+                    key={`${ent.type}-${ent.code}`}
+                    className="search-item"
+                    onClick={() => handleSelect(ent)}
+                  >
+                    <div className="search-item-info">
+                      <span className="search-item-code">{ent.code}</span>
+                      <span className="search-item-nom">{ent.nom}</span>
+                    </div>
+                    <span className={`search-item-type ${ent.type}`}>
+                      {ent.type === 'region' ? 'Région' : 'Dépt'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
       </div>
       <div className="header-right">
         <button

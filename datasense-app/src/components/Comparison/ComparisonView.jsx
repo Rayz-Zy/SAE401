@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LineChart from '../chart/LineChart';
 import BarChart from '../chart/BarChart';
 import DoughnutChart from '../chart/DoughnutChart';
-import { Search, ArrowLeftRight, TrendingUp, Home, Activity } from 'lucide-react';
+import { Search, ArrowLeftRight, TrendingUp, Home, Activity, Users } from 'lucide-react';
 import './ComparisonView.css';
 import { useApi } from '../../context/ApiContext';
 
@@ -127,101 +127,186 @@ export default function ComparisonView() {
         </div>
       </div>
 
-      {entiteA && entiteB && (
-        <div className="comparison-charts">
-          <div className="comparison-card">
-            <div className="card-header-icon">
-              <Activity size={20} color="#ff6384" />
-              <h3>Évolution du Chômage (%)</h3>
-            </div>
-            <BarChart 
-              etiquettes={transformForChart(dataA, 'tauxChomageT4').etiquettes}
-              donnees={transformForChart(dataA, 'tauxChomageT4').donnees}
-              libelle={entiteA.nom}
-              couleur="#3498db"
-              additionalDatasets={[{
-                label: entiteB.nom,
-                data: transformForChart(dataB, 'tauxChomageT4').donnees,
-                backgroundColor: '#e67e22'
-              }]}
-            />
+      {!(entiteA && entiteB) && (
+        <div className="empty-comparison-state fade-in">
+          <div className="empty-state-icon">
+            <ArrowLeftRight size={48} color="#95a5a6" />
           </div>
-
-          <div className="comparison-card">
-            <div className="card-header-icon">
-              <Activity size={20} color="#9b59b6" />
-              <h3>Indicateurs Sociaux Actuels</h3>
+          <h2>Commencez votre comparaison</h2>
+          <p>
+            Veuillez utiliser les barres de recherche ci-dessus pour sélectionner les deux 
+            territoires (départements ou régions) que vous souhaitez analyser.
+          </p>
+          <div className="empty-state-examples">
+            <div className="example-item">
+              <Activity size={24} color="#3498db" />
+              <span>Chômage & Pauvreté</span>
             </div>
-            <BarChart 
-              etiquettes={['Chômage (%)', 'Pauvreté (%)']}
-              donnees={[
-                dataA ? parseFloat(dataA[dataA.length - 1]?.tauxChomageT4 || 0) : 0,
-                dataA ? parseFloat(dataA[dataA.length - 1]?.tauxPauvrete || 0) : 0
-              ]}
-              libelle={entiteA.nom}
-              couleur="#3498db"
-              additionalDatasets={[{
-                label: entiteB.nom,
-                data: [
-                  dataB ? parseFloat(dataB[dataB.length - 1]?.tauxChomageT4 || 0) : 0,
-                  dataB ? parseFloat(dataB[dataB.length - 1]?.tauxPauvrete || 0) : 0
-                ],
-                backgroundColor: '#e67e22'
-              }]}
-            />
-          </div>
-
-          <div className="comparison-card">
-            <div className="card-header-icon">
-              <TrendingUp size={20} color="#3498db" />
-              <h3>Évolution de la Population</h3>
+            <div className="example-item">
+              <Users size={24} color="#27ae60" />
+              <span>Évolution de la Population</span>
             </div>
-            <BarChart 
-              etiquettes={transformForChart(dataA, 'nombreHabitants').etiquettes}
-              donnees={transformForChart(dataA, 'nombreHabitants').donnees}
-              libelle={entiteA.nom}
-              couleur="#3498db"
-              additionalDatasets={[{
-                label: entiteB.nom,
-                data: transformForChart(dataB, 'nombreHabitants').donnees,
-                backgroundColor: '#e67e22'
-              }]}
-            />
-          </div>
-
-          <div className="comparison-card" style={{ gridColumn: "span 1" }}>
-            <div className="card-header-icon">
-              <Home size={20} color="#27ae60" />
-              <h3>Répartition du Logement</h3>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div>
-                <DoughnutChart 
-                  titre={entiteA.nom}
-                  etiquettes={['Social', 'Vacant', 'Privé/Autre']}
-                  donnees={[
-                    dataA ? parseFloat(dataA[dataA.length - 1]?.tauxLogementsSociaux || 0) : 0,
-                    dataA ? parseFloat(dataA[dataA.length - 1]?.tauxDeLogementsVacants || 0) : 0,
-                    dataA ? 100 - (parseFloat(dataA[dataA.length - 1]?.tauxLogementsSociaux || 0) + parseFloat(dataA[dataA.length - 1]?.tauxDeLogementsVacants || 0)) : 100
-                  ]}
-                  couleurs={['#3498db', '#9b59b6', '#f1f2f6']}
-                />
-              </div>
-              <div>
-                <DoughnutChart 
-                  titre={entiteB.nom}
-                  etiquettes={['Social', 'Vacant', 'Privé/Autre']}
-                  donnees={[
-                    dataB ? parseFloat(dataB[dataB.length - 1]?.tauxLogementsSociaux || 0) : 0,
-                    dataB ? parseFloat(dataB[dataB.length - 1]?.tauxDeLogementsVacants || 0) : 0,
-                    dataB ? 100 - (parseFloat(dataB[dataB.length - 1]?.tauxLogementsSociaux || 0) + parseFloat(dataB[dataB.length - 1]?.tauxDeLogementsVacants || 0)) : 100
-                  ]}
-                  couleurs={['#e67e22', '#27ae60', '#f1f2f6']}
-                />
-              </div>
+            <div className="example-item">
+              <Home size={24} color="#9b59b6" />
+              <span>Logement Social et Vacant</span>
             </div>
           </div>
         </div>
+      )}
+
+      {entiteA && entiteB && (
+        <>
+          <div className="comparison-kpi-banner fade-in">
+            <div className="kpi-comparison-card">
+              <div className="kpi-header">
+                <Users size={18} color="#3498db" />
+                <h4>Population Actuelle</h4>
+              </div>
+              <div className="kpi-vs-row">
+                <div className="kpi-val entity-a">
+                  <span>{dataA ? parseInt(dataA[dataA.length - 1]?.nombreHabitants || 0).toLocaleString('fr-FR') : '...'}</span>
+                  <span className="kpi-label">{entiteA.nom}</span>
+                </div>
+                <div className="kpi-divider">VS</div>
+                <div className="kpi-val entity-b">
+                  <span>{dataB ? parseInt(dataB[dataB.length - 1]?.nombreHabitants || 0).toLocaleString('fr-FR') : '...'}</span>
+                  <span className="kpi-label">{entiteB.nom}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="kpi-comparison-card">
+              <div className="kpi-header">
+                <Activity size={18} color="#e74c3c" />
+                <h4>Taux de Chômage</h4>
+              </div>
+              <div className="kpi-vs-row">
+                <div className="kpi-val entity-a">
+                  <span>{dataA ? parseFloat(dataA[dataA.length - 1]?.tauxChomageT4 || 0).toFixed(1) + '%' : '...'}</span>
+                  <span className="kpi-label">{entiteA.nom}</span>
+                </div>
+                <div className="kpi-divider">VS</div>
+                <div className="kpi-val entity-b">
+                  <span>{dataB ? parseFloat(dataB[dataB.length - 1]?.tauxChomageT4 || 0).toFixed(1) + '%' : '...'}</span>
+                  <span className="kpi-label">{entiteB.nom}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="kpi-comparison-card">
+              <div className="kpi-header">
+                <TrendingUp size={18} color="#9b59b6" />
+                <h4>Taux de Pauvreté</h4>
+              </div>
+              <div className="kpi-vs-row">
+                <div className="kpi-val entity-a">
+                  <span>{dataA ? parseFloat(dataA[dataA.length - 1]?.tauxPauvrete || 0).toFixed(1) + '%' : '...'}</span>
+                  <span className="kpi-label">{entiteA.nom}</span>
+                </div>
+                <div className="kpi-divider">VS</div>
+                <div className="kpi-val entity-b">
+                  <span>{dataB ? parseFloat(dataB[dataB.length - 1]?.tauxPauvrete || 0).toFixed(1) + '%' : '...'}</span>
+                  <span className="kpi-label">{entiteB.nom}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="comparison-charts fade-in">
+            <div className="comparison-card">
+              <div className="card-header-icon">
+                <Activity size={20} color="#ff6384" />
+                <h3>Évolution du Chômage (%)</h3>
+              </div>
+              <BarChart 
+                etiquettes={transformForChart(dataA, 'tauxChomageT4').etiquettes}
+                donnees={transformForChart(dataA, 'tauxChomageT4').donnees}
+                libelle={entiteA.nom}
+                couleur="#3498db"
+                additionalDatasets={[{
+                  label: entiteB.nom,
+                  data: transformForChart(dataB, 'tauxChomageT4').donnees,
+                  backgroundColor: '#e67e22'
+                }]}
+              />
+            </div>
+
+            <div className="comparison-card">
+              <div className="card-header-icon">
+                <Activity size={20} color="#9b59b6" />
+                <h3>Indicateurs Sociaux Actuels</h3>
+              </div>
+              <BarChart 
+                etiquettes={['Chômage (%)', 'Pauvreté (%)']}
+                donnees={[
+                  dataA ? parseFloat(dataA[dataA.length - 1]?.tauxChomageT4 || 0) : 0,
+                  dataA ? parseFloat(dataA[dataA.length - 1]?.tauxPauvrete || 0) : 0
+                ]}
+                libelle={entiteA.nom}
+                couleur="#3498db"
+                additionalDatasets={[{
+                  label: entiteB.nom,
+                  data: [
+                    dataB ? parseFloat(dataB[dataB.length - 1]?.tauxChomageT4 || 0) : 0,
+                    dataB ? parseFloat(dataB[dataB.length - 1]?.tauxPauvrete || 0) : 0
+                  ],
+                  backgroundColor: '#e67e22'
+                }]}
+              />
+            </div>
+
+            <div className="comparison-card">
+              <div className="card-header-icon">
+                <TrendingUp size={20} color="#3498db" />
+                <h3>Évolution de la Population</h3>
+              </div>
+              <BarChart 
+                etiquettes={transformForChart(dataA, 'nombreHabitants').etiquettes}
+                donnees={transformForChart(dataA, 'nombreHabitants').donnees}
+                libelle={entiteA.nom}
+                couleur="#3498db"
+                additionalDatasets={[{
+                  label: entiteB.nom,
+                  data: transformForChart(dataB, 'nombreHabitants').donnees,
+                  backgroundColor: '#e67e22'
+                }]}
+              />
+            </div>
+
+            <div className="comparison-card" style={{ gridColumn: "span 1" }}>
+              <div className="card-header-icon">
+                <Home size={20} color="#27ae60" />
+                <h3>Répartition du Logement</h3>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                  <DoughnutChart 
+                    titre={entiteA.nom}
+                    etiquettes={['Social', 'Vacant', 'Privé/Autre']}
+                    donnees={[
+                      dataA ? parseFloat(dataA[dataA.length - 1]?.tauxLogementsSociaux || 0) : 0,
+                      dataA ? parseFloat(dataA[dataA.length - 1]?.tauxDeLogementsVacants || 0) : 0,
+                      dataA ? 100 - (parseFloat(dataA[dataA.length - 1]?.tauxLogementsSociaux || 0) + parseFloat(dataA[dataA.length - 1]?.tauxDeLogementsVacants || 0)) : 100
+                    ]}
+                    couleurs={['#3498db', '#9b59b6', '#f1f2f6']}
+                  />
+                </div>
+                <div>
+                  <DoughnutChart 
+                    titre={entiteB.nom}
+                    etiquettes={['Social', 'Vacant', 'Privé/Autre']}
+                    donnees={[
+                      dataB ? parseFloat(dataB[dataB.length - 1]?.tauxLogementsSociaux || 0) : 0,
+                      dataB ? parseFloat(dataB[dataB.length - 1]?.tauxDeLogementsVacants || 0) : 0,
+                      dataB ? 100 - (parseFloat(dataB[dataB.length - 1]?.tauxLogementsSociaux || 0) + parseFloat(dataB[dataB.length - 1]?.tauxDeLogementsVacants || 0)) : 100
+                    ]}
+                    couleurs={['#e67e22', '#27ae60', '#f1f2f6']}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
