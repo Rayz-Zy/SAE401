@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024">
+<svg id="Calque_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 6486.18 7405.06">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
   <defs>
     <style>
-      .cls-1 {
+      .st0 {
         fill: #fff;
       }
     </style>
   </defs>
-  <path class="cls-1" d="M768.43,567.74v-30c15.08-4.71,23-23.68,24.05-38.45,1.47-20.91-2.45-47.67-24.05-56.55v-34c43.37,13.29,59.17,58.17,51.71,100.21-4.9,27.56-23.62,52.4-51.71,58.79Z"/>
-  <rect class="cls-1" x="748.21" y="545.88" width="13.85" height="21"/>
-  <rect class="cls-1" x="747.89" y="408.83" width="12.53" height="32.91"/>
-  <rect class="cls-1" x="726.43" y="408.75" width="14" height="30.99"/>
-  <rect class="cls-1" x="726.79" y="536.14" width="13.64" height="30.26"/>
-  <rect class="cls-1" x="706.62" y="408.57" width="12.81" height="157.58"/>
-  <rect class="cls-1" x="685.53" y="408.49" width="12.81" height="157.74"/>
+  <path class="st0" d="M3992.41,7400.8v-1394.18c700.81-218.89,1068.87-1100.48,1117.67-1786.88,68.32-971.75-113.86-2215.36-1117.67-2628.04V11.62c2015.53,617.62,2749.8,2703.32,2403.11,4657.04-227.72,1280.79-1097.69,2435.18-2403.11,2732.14h0Z"/>
+  <rect class="st0" x="3052.73" y="6384.9" width="643.65" height="975.93"/>
+  <rect class="st0" x="3037.85" y="15.8" width="582.3" height="1529.42"/>
+  <rect class="st0" x="2040.55" y="12.08" width="650.62" height="1440.19"/>
+  <rect class="st0" x="2057.28" y="5932.25" width="633.89" height="1406.27"/>
+  <rect class="st0" x="1119.92" y="3.72" width="595.32" height="7323.19"/>
+  <rect class="st0" x="139.81" y="0" width="595.32" height="7330.62"/>
 </svg>
