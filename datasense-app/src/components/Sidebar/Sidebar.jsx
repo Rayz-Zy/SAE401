@@ -13,8 +13,7 @@ export default function Sidebar({ currentView, onViewChange, user, onLogout }) {
           style={{ cursor: 'pointer' }}
         >
           <img 
-            src="/logo.svg" 
-            onError={(e) => { e.target.src = LOGO_URL; }}
+            src={logo} 
             alt="Datasense Logo" 
             className="sidebar-logo" 
           />
