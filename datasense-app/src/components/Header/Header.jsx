@@ -133,7 +133,7 @@ export default function Header({ onDepartementSelect, currentView, onViewChange 
         </div>
       </div>
       <div className="header-right">
-        <button 
+        <button
           className={`api-toggle-btn ${isLocalMode ? 'local' : 'online'}`}
           onClick={toggleApiMode}
           title={isLocalMode ? "Passer en mode en ligne" : "Passer en mode local (127.0.0.1:8000)"}
