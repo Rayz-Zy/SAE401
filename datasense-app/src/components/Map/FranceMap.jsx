@@ -12,6 +12,7 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
   const [loading, setLoading] = useState(true);
   const [activeMetric, setActiveMetric] = useState('tauxChomageT4');
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const [showMetricMenu, setShowMetricMenu] = useState(false);
 
   // Metric definitions for labels and scaling
   const metrics = {
@@ -50,7 +51,13 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
   // Calculate scaling for colors
   const metricBounds = useMemo(() => {
     if (stats.length === 0) return { min: 0, max: 1 };
-    const values = stats.map(s => parseFloat(s[activeMetric] || 0));
+    
+    const getVal = (s) => {
+      const v = parseFloat(s[activeMetric] || 0);
+      return activeMetric === 'densitePopulation' ? Math.log10(v + 1) : v;
+    };
+
+    const values = stats.map(getVal);
     const min = Math.min(...values);
     const max = Math.max(...values);
     return { min, max: max === min ? min + 1 : max };
@@ -60,7 +67,9 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
     const dptStats = statsMap[dptId];
     if (!dptStats) return '#e6ebf1';
     
-    const val = parseFloat(dptStats[activeMetric] || 0);
+    const rawVal = parseFloat(dptStats[activeMetric] || 0);
+    const val = activeMetric === 'densitePopulation' ? Math.log10(rawVal + 1) : rawVal;
+    
     const { min, max } = metricBounds;
     const intensity = (val - min) / (max - min);
     
@@ -108,6 +117,40 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
           </div>
         </div>
 
+        <div className="metric-selector">
+          <h4>Visualiser par :</h4>
+          <div className="dropdown-container">
+            <button 
+              className={`metric-dropdown-btn ${showMetricMenu ? 'open' : ''}`}
+              onClick={() => setShowMetricMenu(!showMetricMenu)}
+            >
+              <div className="btn-label-group">
+                <div className={`dot ${metrics[activeMetric].color}`} />
+                {metrics[activeMetric].label}
+              </div>
+              <ArrowRight size={16} className={`arrow-icon ${showMetricMenu ? 'rotate' : ''}`} />
+            </button>
+            
+            {showMetricMenu && (
+              <div className="metric-menu fade-in">
+                {Object.entries(metrics).map(([key, info]) => (
+                  <button 
+                    key={key}
+                    className={`menu-item ${activeMetric === key ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveMetric(key);
+                      setShowMetricMenu(false);
+                    }}
+                  >
+                    <div className={`dot ${info.color}`} />
+                    {info.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="map-info-card">
           {displayedDpt ? (
             <div className="info-content fade-in" key={displayedDpt.id}>
@@ -147,21 +190,6 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
             <span>Données 2023 (Latest)</span>
           </div>
         </div>
-
-        <div className="metric-selector">
-          <h4>Visualiser par :</h4>
-          <div className="metric-chips">
-            {Object.entries(metrics).map(([key, info]) => (
-              <button 
-                key={key}
-                className={`metric-chip ${activeMetric === key ? 'active' : ''}`}
-                onClick={() => setActiveMetric(key)}
-              >
-                {info.label}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       <div className="france-map-main" onMouseMove={handleMouseMove}>
@@ -179,7 +207,7 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
               );
               
               const dptStats = statsMap[dpt.id];
-              const value = dptStats ? dptStats[activeMetric] : null;
+              const rawValue = dptStats ? dptStats[activeMetric] : null;
 
               return (
                 <path
@@ -192,49 +220,59 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
                   }}
                   className={`department-path ${selectedId === dpt.id ? 'selected' : ''} ${matchesSearch ? 'highlight' : ''}`}
                   onMouseEnter={() => {
-                    console.log("Hovering department:", dpt.nom);
                     setHoveredDpt(dpt);
                   }}
                   onMouseLeave={() => setHoveredDpt(null)}
                   onClick={() => onDepartementSelect({ code: dpt.id, nom: dpt.nom, type: 'departement' })}
                 >
-                  <title>{dpt.nom} ({dpt.id}) : {value || 'N/A'}{value ? metrics[activeMetric].unit : ''}</title>
+                  <title>{dpt.nom} ({dpt.id}) : {rawValue || 'N/A'}{rawValue ? metrics[activeMetric].unit : ''}</title>
                 </path>
               );
             })}
           </svg>
           
-          {hoveredDpt && (
-            <div 
-              className="map-floating-tooltip"
-              style={{ 
-                left: tooltipPos.x, 
-                top: tooltipPos.y
-              }}
-            >
-              <div className="tooltip-dpt-code">{hoveredDpt.id}</div>
-              <div className="tooltip-content">
-                <strong>{hoveredDpt.nom}</strong>
-                <div className="tooltip-value">
-                  {metrics[activeMetric].label} : <span>{statsMap[hoveredDpt.id]?.[activeMetric] || 'N/A'} {metrics[activeMetric].unit}</span>
-                </div>
-              </div>
-            </div>
-          )}
-
           <div className="map-legend">
             <div className="legend-scale">
-              <span>{metricBounds.min}{metrics[activeMetric].unit}</span>
+              <span>{activeMetric === 'densitePopulation' ? Math.pow(10, metricBounds.min).toFixed(0) : metricBounds.min}{metrics[activeMetric].unit}</span>
               <div 
                 className="gradient-bar" 
-                style={{ background: `linear-gradient(to right, #f8f9fa, ${metrics[activeMetric].color})` }}
+                style={{ background: `linear-gradient(to right, #f8f9fa, ${getColorHex(activeMetric)})` }}
               ></div>
-              <span>{metricBounds.max}{metrics[activeMetric].unit}</span>
+              <span>{activeMetric === 'densitePopulation' ? Math.pow(10, metricBounds.max).toFixed(0) : metricBounds.max}{metrics[activeMetric].unit}</span>
             </div>
-            <p><Info size={14} inline /> Cliquez pour plus de détails</p>
+            <p><Info size={14} /> Cliquez pour plus de détails</p>
           </div>
         </div>
+          
+        {hoveredDpt && (
+          <div 
+            className="map-floating-tooltip"
+            style={{ 
+              left: tooltipPos.x, 
+              top: tooltipPos.y
+            }}
+          >
+            <div className="tooltip-dpt-code">{hoveredDpt.id}</div>
+            <div className="tooltip-content">
+              <strong>{hoveredDpt.nom}</strong>
+              <div className="tooltip-value">
+                {metrics[activeMetric].label} : <span>{statsMap[hoveredDpt.id]?.[activeMetric] || 'N/A'} {metrics[activeMetric].unit}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+// Helper to get hex color for gradient
+function getColorHex(metric) {
+  const hex = {
+    tauxChomageT4: '#e74c3c',
+    tauxPauvrete: '#9b59b6',
+    densitePopulation: '#3498db',
+    tauxDeLogementsVacants: '#e67e22'
+  };
+  return hex[metric] || '#3498db';
 }

@@ -132,12 +132,14 @@
   color: #7f8c8d;
 }
 
-/* Metric Selector */
+/* Metric Selector Dropdown */
 .metric-selector {
   padding: 15px;
   background: #fdfdfd;
   border-radius: 16px;
   border: 1px dashed #dcdde1;
+  position: relative;
+  z-index: 50;
 }
 
 .metric-selector h4 {
@@ -148,34 +150,111 @@
   letter-spacing: 0.5px;
 }
 
-.metric-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.dropdown-container {
+  position: relative;
+  width: 100%;
 }
 
-.metric-chip {
-  padding: 6px 12px;
-  border-radius: 20px;
+.metric-dropdown-btn {
+  width: 100%;
+  padding: 10px 15px;
+  background: #ffffff;
   border: 1px solid #e0e0e0;
-  background: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #7f8c8d;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+
+.metric-dropdown-btn:hover {
+  border-color: #3498db;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transform: translateY(-1px);
+}
+
+.metric-dropdown-btn.open {
+  border-color: #3498db;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.btn-label-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot.red { background: #e74c3c; }
+.dot.purple { background: #9b59b6; }
+.dot.blue { background: #3498db; }
+.dot.orange { background: #e67e22; }
+
+.arrow-icon {
+  color: #95a5a6;
+  transition: transform 0.3s ease;
+}
+
+.arrow-icon.rotate {
+  transform: rotate(90deg);
+}
+
+.metric-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+  z-index: 100;
+}
+
+.menu-item {
+  width: 100%;
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #f5f6fa;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.85rem;
+  color: #34495e;
   transition: all 0.2s;
 }
 
-.metric-chip:hover {
-  border-color: #3498db;
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:hover {
+  background: #f8f9fa;
+  padding-left: 20px;
   color: #3498db;
 }
 
-.metric-chip.active {
-  background: #3498db;
-  border-color: #3498db;
-  color: white;
-  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+.menu-item.active {
+  background: #ebf5fb;
+  color: #3498db;
+  font-weight: 600;
 }
 
 .france-map-main {
