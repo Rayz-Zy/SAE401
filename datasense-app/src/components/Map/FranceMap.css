@@ -137,7 +137,7 @@
   padding: 15px;
   background: #fdfdfd;
   border-radius: 16px;
-  border: 1px dashed #dcdde1;
+  border: none;
   position: relative;
   z-index: 50;
 }
