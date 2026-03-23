@@ -43,7 +43,10 @@ export default function FranceMap({ onDepartementSelect, selectedId }) {
   const statsMap = useMemo(() => {
     const map = {};
     stats.forEach(s => {
-      if (s.departement) map[s.departement.code] = s;
+      if (s.departement) {
+        const code = s.departement.code.toString().padStart(2, '0');
+        map[code] = s;
+      }
     });
     return map;
   }, [stats]);

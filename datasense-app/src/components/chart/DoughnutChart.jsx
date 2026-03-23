@@ -39,6 +39,7 @@ const DoughnutChart = ({ etiquettes, donnees, titre, couleurs }) => {
     plugins: {
       legend: {
         position: 'bottom',
+        onClick: () => {},
         labels: {
           usePointStyle: true,
           padding: 20,

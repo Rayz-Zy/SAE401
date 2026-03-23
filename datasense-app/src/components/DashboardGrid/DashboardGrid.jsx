@@ -29,9 +29,10 @@ export default function DashboardGrid({ selectedDepartement, currentView }) {
     definir_erreur(null);
 
     const entityType = selectedDepartement.type || (currentView === 'regions' ? 'region' : 'departement');
+    const apiCode = selectedDepartement.code.replace(/^0+/, '');
     const endpoint = entityType === 'region'
-      ? `${apiBaseUrl}/statistique/region/${selectedDepartement.code}`
-      : `${apiBaseUrl}/statistique/logement/${selectedDepartement.code}`;
+      ? `${apiBaseUrl}/statistique/region/${apiCode}`
+      : `${apiBaseUrl}/statistique/logement/${apiCode}`;
 
     fetch(endpoint)
       .then(res => {

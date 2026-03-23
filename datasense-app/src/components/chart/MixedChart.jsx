@@ -56,6 +56,7 @@ const MixedChart = ({ etiquettes, donneesBar, donneesLine, libelleBar, libelleLi
     plugins: {
       legend: {
         position: 'top',
+        onClick: () => {},
         labels: {
           usePointStyle: true,
           padding: 20,

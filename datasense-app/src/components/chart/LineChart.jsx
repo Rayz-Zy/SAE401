@@ -67,6 +67,7 @@ const LineChart = ({ etiquettes, donnees, titre, libelle, couleur = 'rgba(54, 16
       legend: {
         display: true,
         position: 'top',
+        onClick: () => {},
         labels: {
           usePointStyle: true,
           padding: 20,

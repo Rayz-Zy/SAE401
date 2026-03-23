@@ -7,12 +7,13 @@ export default function DataInsights({ stats }) {
   const insights = [];
   const latest = stats[stats.length - 1];
   const previous = stats.length > 1 ? stats[stats.length - 2] : null;
+  const year = latest.anneePublication || 2023;
 
   // Insight: Housing Vacancy
   const vacancy = parseFloat(latest.tauxDeLogementsVacants);
   if (vacancy > 10) {
     insights.push({
-      text: `Vacance : ${vacancy}% (Elevé)`,
+      text: `Logements vacants (${year}) : ${vacancy}%`,
       icon: <Info size={14} color="#e67e22" />
     });
   }
@@ -20,14 +21,15 @@ export default function DataInsights({ stats }) {
   // Insight: Population Trend
   if (previous) {
     const popDiff = latest.nombreHabitants - previous.nombreHabitants;
+    const prevYear = previous.anneePublication || year - 1;
     if (popDiff > 0) {
       insights.push({
-        text: `Pop. : +${popDiff.toLocaleString()} hab.`,
+        text: `Pop. (${prevYear} ➝ ${year}) : +${popDiff.toLocaleString()} hab.`,
         icon: <TrendingUp size={14} color="#27ae60" />
       });
     } else if (popDiff < 0) {
       insights.push({
-        text: `Pop. : -${Math.abs(popDiff).toLocaleString()} hab.`,
+        text: `Pop. (${prevYear} ➝ ${year}) : -${Math.abs(popDiff).toLocaleString()} hab.`,
         icon: <TrendingDown size={14} color="#e74c3c" />
       });
     }
@@ -37,13 +39,36 @@ export default function DataInsights({ stats }) {
   const poverty = parseFloat(latest.tauxPauvrete);
   if (poverty > 15) {
     insights.push({
-      text: `Pauvreté : ${poverty}%`,
+      text: `Taux de pauvreté (${year}) : ${poverty}%`,
       icon: <Lightbulb size={14} color="#f1c40f" />
     });
   }
 
-  // We only show the first 2 insights to keep it compact
-  const displayedInsights = insights.slice(0, 2);
+  // Insight: Logements Sociaux
+  const social = parseFloat(latest.tauxLogementsSociaux);
+  if (social < 10) {
+    insights.push({
+      text: `Parc social faible (${year}) : ${social}%`,
+      icon: <Info size={14} color="#e74c3c" />
+    });
+  } else if (social > 20) {
+    insights.push({
+      text: `Parc social fort (${year}) : ${social}%`,
+      icon: <Info size={14} color="#27ae60" />
+    });
+  }
+
+  // Insight: Passoires thermiques
+  const energivores = parseFloat(latest.parcSocialTauxLogementsEnergivores);
+  if (energivores > 15) {
+    insights.push({
+      text: `Énergivores (${year}) : ${energivores}%`,
+      icon: <Info size={14} color="#e74c3c" />
+    });
+  }
+
+  // We show up to 3 insights
+  const displayedInsights = insights.slice(0, 3);
 
   if (displayedInsights.length === 0) return <span>Aucun insight.</span>;
 

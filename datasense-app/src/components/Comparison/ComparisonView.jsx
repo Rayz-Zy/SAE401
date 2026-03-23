@@ -44,9 +44,10 @@ export default function ComparisonView() {
   }, [entiteB]);
 
   const fetchStats = (ent, setter) => {
+    const apiCode = ent.code.replace(/^0+/, '');
     const endpoint = ent.type === 'region' 
-      ? `${apiBaseUrl}/statistique/region/${ent.code}`
-      : `${apiBaseUrl}/statistique/logement/${ent.code}`;
+      ? `${apiBaseUrl}/statistique/region/${apiCode}`
+      : `${apiBaseUrl}/statistique/logement/${apiCode}`;
     
     fetch(endpoint)
       .then(res => res.json())

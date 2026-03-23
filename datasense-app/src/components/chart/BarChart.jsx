@@ -42,6 +42,7 @@ const BarChart = ({ etiquettes, donnees, titre, libelle, couleur, additionalData
     plugins: {
       legend: {
         position: 'top',
+        onClick: () => {},
         labels: {
           usePointStyle: true,
           padding: 20,
