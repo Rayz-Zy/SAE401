@@ -2,6 +2,9 @@
 
 Projet de visualisation de données statistiques sur le logement et la démographie en France.
 
+### Version Heberger de l'app
+https://dataviz-datasense.alwaysdata.net/
+
 ### 1. Frontend (`datasense-app`)
 Ouvrez un terminal dans le dossier `datasense-app` et installez les dépendances :
 ```bash
